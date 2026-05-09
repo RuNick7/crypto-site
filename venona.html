@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Операция ВЕНОНА — Секретный Архив</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">← АРХИВ</a>
+  <ul class="nav-links">
+    <li><a href="vigenere.html">ОП. ВИГЕНЕР</a></li>
+    <li><a href="enigma.html">ОП. ЭНИГМА</a></li>
+    <li><a href="venona.html" class="active">ОП. ВЕНОНА</a></li>
+  </ul>
+  <div class="nav-clearance">ДОПУСК <span class="level" id="clearanceLevel">0</span>/3</div>
+  <button class="nav-burger" id="navBurger" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page">
+  <section class="section-hero">
+    <div class="container">
+      <div class="op-tag">ОПЕРАЦИЯ 03 · 1943–1980 · ХОЛОДНАЯ ВОЙНА</div>
+      <h1>Операция ВЕНОНА</h1>
+      <p class="mt-2" style="max-width:620px; color:var(--text-dim)">
+        Одноразовый блокнот — единственный доказуемо нерасшифруемый шифр.
+        Советская разведка использовала его для связи с агентами.
+        Но в 1942–43 году они совершили роковую ошибку — и американцы
+        читали их переписку 37 лет.
+      </p>
+
+      <div class="steps mt-3" id="stepsNav">
+        <div class="step-dot active" data-step="0" title="Что такое ОТП">1</div>
+        <div class="step-dot" data-step="1" title="Зашифровать/расшифровать">2</div>
+        <div class="step-dot" data-step="2" title="Нерасшифруемость">3</div>
+        <div class="step-dot" data-step="3" title="Атака глубины">4</div>
+        <div class="step-dot" data-step="4" title="Криб-драггинг по XOR">5</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-content">
+    <div class="container">
+
+      <!-- ═══ STEP 0: What is OTP ═══ -->
+      <div class="step-panel" id="step0">
+        <h2>Одноразовый блокнот (OTP)</h2>
+        <div class="callout mt-2">
+          <strong class="amber">Принцип прост:</strong> каждая буква сообщения сдвигается
+          на букву ключа — так же, как в шифре Цезаря, но ключ такой же длины,
+          как само сообщение, и генерируется случайно. Использовать ключ можно только один раз.
+        </div>
+
+        <div class="grid-2 mt-3" style="gap:1.5rem">
+          <div>
+            <div class="card">
+              <h3 style="margin-bottom:0.75rem">Почему нерасшифруем?</h3>
+              <p style="font-size:0.88rem; color:var(--text-dim)">
+                Без знания ключа любой открытый текст той же длины является
+                <em style="color:var(--white)">математически одинаково вероятным</em>
+                объяснением шифртекста.
+              </p>
+              <p style="font-size:0.88rem; color:var(--text-dim)">
+                Нет никакого статистического сигнала, за который можно зацепиться —
+                при случайном ключе частоты букв в шифртексте равномерны.
+              </p>
+              <div style="margin-top:0.75rem; font-size:0.82rem">
+                <span class="amber">Доказал:</span> Клод Шеннон (1949 г.)
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card card-classified">
+              <h3 style="margin-bottom:0.75rem">Где применялся</h3>
+              <ul style="font-size:0.85rem; color:var(--text-dim); list-style:none; padding:0">
+                <li style="margin-bottom:0.5rem">🔴 <strong style="color:var(--white)">«Красный телефон»</strong> — Москва–Вашингтон (с 1963 г.)</li>
+                <li style="margin-bottom:0.5rem">🕵️ <strong style="color:var(--white)">Советская разведка</strong> — связь с агентами в США</li>
+                <li style="margin-bottom:0.5rem">🌍 <strong style="color:var(--white)">Дипломатическая связь</strong> — посольства СССР и США</li>
+                <li>💻 <strong style="color:var(--white)">Верона</strong> — то, что пошло не так...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn" onclick="goStep(1)">К ШИФРОВАНИЮ ▶</button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 1: Encrypt/Decrypt ═══ -->
+      <div class="step-panel" id="step1" style="display:none">
+        <h2>Зашифруй сообщение одноразовым блокнотом</h2>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>ОТП Шифратор</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Открытый текст (латиница)</label>
+                <input type="text" id="otpPlain" value="MEETMEATTHECLOCK" style="text-transform:uppercase">
+              </div>
+              <div>
+                <label class="label">Ключ (той же длины)</label>
+                <div style="display:flex; gap:0.5rem">
+                  <input type="text" id="otpKey" value="XMCKLENQRPBTVFUD" style="text-transform:uppercase; flex:1">
+                  <button class="btn btn-ghost" id="genKeyBtn" style="white-space:nowrap; padding:0.4em 0.7em; font-size:0.75rem">⟳ СЛУЧАЙНЫЙ</button>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-green" id="otpEncBtn">ЗАШИФРОВАТЬ</button>
+
+            <div id="otpEncResult" class="mt-3" style="display:none">
+              <div class="otp-grid" id="otpGrid"></div>
+              <div class="mt-2">
+                <label class="label">Шифртекст</label>
+                <div class="cipher-output" id="otpCipherOut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decrypt -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>ОТП Расшифровщик (знаешь ключ)</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Шифртекст</label>
+                <input type="text" id="otpDecCipher" style="text-transform:uppercase">
+              </div>
+              <div>
+                <label class="label">Ключ</label>
+                <input type="text" id="otpDecKey" style="text-transform:uppercase">
+              </div>
+            </div>
+            <button class="btn" id="otpDecBtn">РАСШИФРОВАТЬ</button>
+            <div class="mt-2">
+              <div class="cipher-output" id="otpDecOut" style="color:var(--amber)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn" onclick="goStep(2)">УБЕДИТЬСЯ В НЕРАСШИФРУЕМОСТИ ▶</button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 2: Unbreakability demo ═══ -->
+      <div class="step-panel" id="step2" style="display:none">
+        <h2>Почему ОТП нельзя взломать</h2>
+
+        <div class="callout mt-2">
+          Возьми один шифртекст и два разных ключа — получишь два совершенно разных
+          и одинаково «правдоподобных» открытых текста. Без ключа невозможно
+          определить, какой из них правильный.
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Демонстрация неоднозначности</h3></div>
+          <div class="panel-body">
+            <label class="label">Шифртекст</label>
+            <div class="cipher-output mb-2" id="demoCtDisplay" style="margin-bottom:1rem; font-size:1rem; letter-spacing:0.1em">FMJFERFOZJLF</div>
+
+            <div class="grid-2" style="gap:1rem">
+              <div>
+                <label class="label">Ключ А → открытый текст А</label>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem">
+                  <input type="text" id="demoKeyA" value="EBBMXRLPWHQG" style="text-transform:uppercase; flex:1">
+                  <button class="btn btn-ghost" id="demoDecA" style="padding:0.4em 0.6em; font-size:0.75rem">▶</button>
+                </div>
+                <div class="cipher-output" id="demoOutA" style="color:var(--amber); min-height:36px"></div>
+              </div>
+              <div>
+                <label class="label">Ключ Б → открытый текст Б</label>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem">
+                  <input type="text" id="demoKeyB" value="XHZQTGHWHZIZ" style="text-transform:uppercase; flex:1">
+                  <button class="btn btn-ghost" id="demoDecB" style="padding:0.4em 0.6em; font-size:0.75rem">▶</button>
+                </div>
+                <div class="cipher-output" id="demoOutB" style="color:var(--green); min-height:36px"></div>
+              </div>
+            </div>
+
+            <div class="callout callout-red mt-3" id="demoConclusion" style="display:none">
+              <strong class="red">Видишь?</strong> Один шифртекст — два разных осмысленных текста.
+              Без ключа математически невозможно определить, какой «правильный».
+              Именно это доказал Клод Шеннон в 1949 году — ОТП имеет
+              <em>совершенную секретность</em>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Frequency analysis -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Частотный анализ ОТП</h3></div>
+          <div class="panel-body">
+            <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:1rem">
+              В обычном шифртексте частотный анализ находит закономерности. В ОТП — нет.
+            </p>
+            <div id="freqCompare" class="grid-2" style="gap:1rem"></div>
+            <button class="btn mt-2" id="freqCompareBtn">СРАВНИТЬ ЧАСТОТЫ</button>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn" onclick="goStep(3)">К ОШИБКЕ СОВЕТОВ ▶</button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 3: Depth attack ═══ -->
+      <div class="step-panel" id="step3" style="display:none">
+        <h2>Роковая ошибка: повторное использование ключа</h2>
+
+        <div class="callout callout-red mt-2">
+          <strong class="red">Что случилось в 1942–43?</strong><br>
+          Советская разведка (НКВД) испытывала дефицит ключевых блокнотов.
+          В условиях военного времени часть ключей была использована <em>дважды</em>.
+          Американский проект VENONA обнаружил это через статистический анализ
+          тысяч перехваченных телеграмм.
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Атака глубины (Depth Attack)</h3></div>
+          <div class="panel-body">
+            <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:1rem">
+              Если <strong style="color:var(--white)">два разных сообщения</strong> зашифрованы
+              <strong style="color:var(--white)">одним ключом</strong>,
+              то их XOR даёт XOR открытых текстов — а это уже атакуемо!
+            </p>
+
+            <div class="depth-formula">
+              C₁ = P₁ ⊕ K<br>
+              C₂ = P₂ ⊕ K<br>
+              <span class="amber">C₁ ⊕ C₂ = P₁ ⊕ P₂</span><br>
+              <span class="dim" style="font-size:0.8rem">Ключ исчез! Осталось P₁ ⊕ P₂</span>
+            </div>
+
+            <div class="grid-2 mt-3" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Сообщение 1 (P₁)</label>
+                <input type="text" id="depthP1" value="SENDTROOPS" style="text-transform:uppercase">
+              </div>
+              <div>
+                <label class="label">Сообщение 2 (P₂)</label>
+                <input type="text" id="depthP2" value="MEETATDAWN" style="text-transform:uppercase">
+              </div>
+            </div>
+
+            <button class="btn" id="depthGenBtn">ЗАШИФРОВАТЬ ОДНИМ КЛЮЧОМ</button>
+
+            <div id="depthResult" class="mt-3" style="display:none">
+              <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+                <div>
+                  <label class="label">Шифртекст C₁</label>
+                  <div class="cipher-output" id="depthC1"></div>
+                </div>
+                <div>
+                  <label class="label">Шифртекст C₂</label>
+                  <div class="cipher-output" id="depthC2"></div>
+                </div>
+              </div>
+              <div>
+                <label class="label">Использованный ключ K</label>
+                <div class="cipher-output" id="depthKey" style="color:var(--text-dim); font-size:0.85rem"></div>
+              </div>
+              <div class="callout callout-red mt-2">
+                Перехватчик видит только C₁ и C₂. Ключа у него нет.<br>
+                Но он может посчитать: <strong class="amber">C₁ ⊕ C₂ = ?</strong>
+              </div>
+              <button class="btn btn-green mt-2" id="depthXorBtn">ВЫЧИСЛИТЬ C₁ ⊕ C₂</button>
+              <div id="depthXorResult" class="mt-2" style="display:none">
+                <label class="label">C₁ ⊕ C₂ = P₁ ⊕ P₂</label>
+                <div class="cipher-output" id="depthXorOut" style="color:var(--amber)"></div>
+                <div class="callout mt-2">
+                  Теперь у нас P₁ ⊕ P₂. Нажми «Дальше» — попробуем угадать слова из сообщений!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-green" id="toCribXorBtn" style="display:none" onclick="goStep(4)">К КРИББ-ДРАГГИНГУ ▶</button>
+          <button class="btn btn-ghost" onclick="goStep(4)" style="margin-left:0.5rem">ПРОПУСТИТЬ</button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 4: Crib drag on XOR ═══ -->
+      <div class="step-panel" id="step4" style="display:none">
+        <h2>Криб-драггинг по P₁ ⊕ P₂</h2>
+        <div class="callout mt-2">
+          Зная P₁ ⊕ P₂, мы можем «перетаскивать» предполагаемые слова одного сообщения —
+          если слово окажется правильным, на выходе получим фрагмент второго сообщения.
+          Постепенно оба текста восстанавливаются!
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Интерактивный криб-драггинг</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">P₁ ⊕ P₂ (XOR двух шифртекстов)</label>
+                <input type="text" id="xorInput" style="text-transform:uppercase" placeholder="Автозаполнение из шага 4">
+              </div>
+              <div>
+                <label class="label">Попробовать слово из P₁ (криб)</label>
+                <div style="display:flex; gap:0.5rem">
+                  <input type="text" id="cribXorWord" value="SEND" style="text-transform:uppercase; flex:1">
+                  <input type="text" id="cribXorOffset" value="0" style="width:50px; text-align:center" placeholder="Поз.">
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-green" id="cribXorBtn">ПРИМЕНИТЬ КРИБ</button>
+
+            <div id="cribXorResult" class="mt-3" style="display:none">
+              <label class="label">Если P₁ содержит «<span id="cribXorWordDisplay"></span>» на позиции <span id="cribXorOffsetDisplay"></span>, то P₂ содержит:</label>
+              <div class="cipher-output mt-1" id="cribXorRecovered" style="color:var(--green); font-size:1.1rem; letter-spacing:0.15em"></div>
+              <div class="mt-2" id="cribXorHint"></div>
+            </div>
+
+            <!-- Workspace -->
+            <div class="mt-3">
+              <label class="label">Рабочее пространство — накапливай найденные фрагменты</label>
+              <div id="workspace" class="workspace-grid"></div>
+              <button class="btn btn-ghost mt-2" id="addToWorkspace">+ ДОБАВИТЬ РЕЗУЛЬТАТ В БЛОКНОТ</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final reveal -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Финальная расшифровка</h3></div>
+          <div class="panel-body">
+            <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:1rem">
+              Когда угадано достаточно фрагментов, полный текст сообщений восстанавливается.
+              Нажми «Показать ответ» чтобы увидеть оба исходных сообщения.
+            </p>
+            <button class="btn btn-green" id="revealDepthBtn">ПОКАЗАТЬ ИСХОДНЫЕ СООБЩЕНИЯ</button>
+            <div id="depthRevealResult" class="mt-3" style="display:none">
+              <div class="grid-2" style="gap:1rem">
+                <div>
+                  <label class="label">Сообщение P₁</label>
+                  <div class="cipher-output" id="revealP1" style="color:var(--amber)"></div>
+                </div>
+                <div>
+                  <label class="label">Сообщение P₂</label>
+                  <div class="cipher-output" id="revealP2" style="color:var(--green)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-green mt-3">
+          <strong class="green">✓ Операция ВЕНОНА завершена.</strong><br>
+          Именно так аналитики АНБ работали с советскими телеграммами 37 лет.
+          В итоге они идентифицировали более 300 советских агентов в США,
+          включая Юлиуса и Этель Розенберг.
+        </div>
+
+        <div class="callout callout-red mt-2">
+          <strong class="red">Главный урок криптографии:</strong>
+          Даже математически совершенный шифр бесполезен, если нарушены правила его использования.
+          Правило № 1 ОТП — <strong>никогда не использовать ключ дважды.</strong>
+        </div>
+
+        <div class="mt-3 text-center">
+          <a href="index.html" class="btn btn-green">ВЕРНУТЬСЯ В АРХИВ ▶</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="clearance-bar"><div class="clearance-fill" id="clearanceFill" style="width:0%"></div></div>
+
+<style>
+/* OTP grid visualization */
+.otp-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.otp-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 30px;
+  padding: 3px 4px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 3px;
+  animation: flipIn 0.3s ease forwards;
+  opacity: 0;
+}
+.otp-plain  { font-size: 0.9rem; color: var(--white); }
+.otp-arrow  { font-size: 0.55rem; color: var(--text-dim); }
+.otp-key    { font-size: 0.75rem; color: var(--green); }
+.otp-shift  { font-size: 0.6rem;  color: var(--text-dim); }
+.otp-cipher { font-size: 0.9rem; color: var(--amber); font-weight: bold; }
+
+/* Depth formula */
+.depth-formula {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 2;
+  margin: 1rem 0;
+}
+
+/* Workspace */
+.workspace-grid {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.ws-entry {
+  font-size: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  animation: fadeUp 0.3s ease;
+}
+.ws-crib { color: var(--amber); }
+.ws-pos  { color: var(--text-dim); }
+.ws-recovered { color: var(--green); }
+
+/* Freq compare bars */
+.freq-compare-col h4 {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.freq-mini-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 50px;
+  background: var(--bg-input);
+  padding: 3px 3px 0;
+  border-radius: 3px 3px 0 0;
+}
+.fmb { flex:1; border-radius: 2px 2px 0 0; min-height: 2px; }
+</style>
+
+<script type="module">
+import { normalize, otpApply, otpDecrypt, xorCiphertexts,
+         randomKey, letterFrequency, cribDragXor, ALPHA } from './js/ciphers/otp.js';
+
+// ── State ──
+let lastCipher = 'FMJFERFOZJLF';
+let depthP1val = 'SENDTROOPS', depthP2val = 'MEETATDAWN';
+let depthKey   = '';
+let depthXor   = '';
+
+// ── Clearance ──
+const lvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+document.getElementById('clearanceLevel').textContent = lvl;
+document.getElementById('clearanceFill').style.width = (lvl/3*100)+'%';
+
+// ── Step nav ──
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('step'+n).style.display = 'block';
+  document.getElementById('step'+n).classList.add('fade-up');
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.classList.remove('active','done');
+    if(i < n) d.classList.add('done');
+    if(i === n) d.classList.add('active');
+  });
+  window.scrollTo({top:60,behavior:'smooth'});
+  if(n === 2) renderFreqCompare();
+}
+document.querySelectorAll('.step-dot').forEach(d => {
+  d.addEventListener('click', () => goStep(+d.dataset.step));
+});
+window.goStep = goStep;
+
+// ══════════════════════════════════
+// STEP 1 — OTP encrypt/decrypt
+// ══════════════════════════════════
+document.getElementById('genKeyBtn').addEventListener('click', () => {
+  const pt = normalize(document.getElementById('otpPlain').value);
+  document.getElementById('otpKey').value = randomKey(pt.length || 16);
+});
+
+document.getElementById('otpEncBtn').addEventListener('click', () => {
+  const pt  = normalize(document.getElementById('otpPlain').value);
+  const key = normalize(document.getElementById('otpKey').value);
+  if(!pt || !key) return;
+
+  // Pad/trim key to match plaintext length
+  const k = key.padEnd(pt.length, 'X').slice(0, pt.length);
+  document.getElementById('otpKey').value = k;
+
+  const ct = otpApply(pt, k);
+  lastCipher = ct;
+
+  const grid = document.getElementById('otpGrid');
+  grid.innerHTML = '';
+  pt.split('').forEach((ch, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'otp-cell';
+    cell.style.animationDelay = (i * 0.03) + 's';
+    const ki = ALPHA.indexOf(k[i]);
+    cell.innerHTML = `
+      <span class="otp-plain">${ch}</span>
+      <span class="otp-arrow">⊕</span>
+      <span class="otp-key">${k[i]}</span>
+      <span class="otp-shift">(+${ki})</span>
+      <span class="otp-arrow">=</span>
+      <span class="otp-cipher">${ct[i]}</span>`;
+    grid.appendChild(cell);
+  });
+
+  document.getElementById('otpCipherOut').textContent = ct;
+  document.getElementById('otpEncResult').style.display = 'block';
+
+  // Pre-fill decrypt
+  document.getElementById('otpDecCipher').value = ct;
+  document.getElementById('otpDecKey').value = k;
+
+  // Pre-fill demo
+  document.getElementById('demoCtDisplay').textContent = ct.slice(0,12) || ct;
+});
+
+document.getElementById('otpDecBtn').addEventListener('click', () => {
+  const ct  = document.getElementById('otpDecCipher').value;
+  const key = document.getElementById('otpDecKey').value;
+  const out = otpDecrypt(ct, key);
+  const el  = document.getElementById('otpDecOut');
+  el.innerHTML = '';
+  out.split('').forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.className = 'flip-char';
+    s.style.animationDelay = (i*0.03)+'s';
+    s.textContent = ch;
+    el.appendChild(s);
+  });
+});
+
+// ══════════════════════════════════
+// STEP 2 — Unbreakability
+// ══════════════════════════════════
+function renderFreqCompare() {
+  const ct = lastCipher || 'FMJFERFOZJLF';
+  // Generate a long OTP encrypted text and a Vigenère-like text for comparison
+  const plainSample  = 'THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG';
+  const keySample    = randomKey(plainSample.length);
+  const otpSample    = otpApply(plainSample, keySample);
+  const vigSample    = otpApply(plainSample, 'LEMON'); // repeated key = Vigenère-like
+
+  const container = document.getElementById('freqCompare');
+  container.innerHTML = '';
+
+  [
+    { label: 'Открытый текст (английский)', text: plainSample, color: '#4488ff' },
+    { label: 'ОТП шифртекст', text: otpSample, color: 'var(--green)' },
+    { label: 'Шифр Виженера (ключ LEMON)', text: vigSample, color: 'var(--amber)' },
+  ].slice(0,2).forEach(({ label, text, color }) => {
+    const freq = letterFrequency(text);
+    const max  = Math.max(...freq.map(f => f.pct), 0.001);
+
+    const col = document.createElement('div');
+    col.className = 'freq-compare-col';
+    col.innerHTML = `<h4>${label}</h4>`;
+
+    const bars = document.createElement('div');
+    bars.className = 'freq-mini-bars';
+    freq.forEach(({ letter, pct }) => {
+      const bar = document.createElement('div');
+      bar.className = 'fmb';
+      bar.style.height = Math.round(pct/max*100)+'%';
+      bar.style.background = color;
+      bar.title = `${letter}: ${(pct*100).toFixed(1)}%`;
+      bars.appendChild(bar);
+    });
+    col.appendChild(bars);
+    container.appendChild(col);
+  });
+}
+
+document.getElementById('freqCompareBtn').addEventListener('click', renderFreqCompare);
+
+// Demo decryptions
+function demoDecrypt(keyId, outId, conclusionId) {
+  const ct  = document.getElementById('demoCtDisplay').textContent;
+  const key = document.getElementById(keyId).value;
+  const pt  = otpDecrypt(ct, key);
+  document.getElementById(outId).textContent = pt;
+  if(conclusionId) document.getElementById(conclusionId).style.display = 'block';
+}
+document.getElementById('demoDecA').addEventListener('click', () => demoDecrypt('demoKeyA','demoOutA',null));
+document.getElementById('demoDecB').addEventListener('click', () => demoDecrypt('demoKeyB','demoOutB','demoConclusion'));
+
+// ══════════════════════════════════
+// STEP 3 — Depth attack
+// ══════════════════════════════════
+document.getElementById('depthGenBtn').addEventListener('click', () => {
+  depthP1val = normalize(document.getElementById('depthP1').value) || 'SENDTROOPS';
+  depthP2val = normalize(document.getElementById('depthP2').value) || 'MEETATDAWN';
+  const len = Math.min(depthP1val.length, depthP2val.length);
+  depthP1val = depthP1val.slice(0, len);
+  depthP2val = depthP2val.slice(0, len);
+
+  depthKey = randomKey(len);
+  const c1 = otpApply(depthP1val, depthKey);
+  const c2 = otpApply(depthP2val, depthKey);
+
+  document.getElementById('depthC1').textContent  = c1;
+  document.getElementById('depthC2').textContent  = c2;
+  document.getElementById('depthKey').textContent = depthKey + ' (скрыт от перехватчика)';
+  document.getElementById('depthResult').style.display = 'block';
+  document.getElementById('depthXorResult').style.display = 'none';
+});
+
+document.getElementById('depthXorBtn').addEventListener('click', () => {
+  const c1 = document.getElementById('depthC1').textContent;
+  const c2 = document.getElementById('depthC2').textContent;
+  depthXor = xorCiphertexts(c1, c2);
+  document.getElementById('depthXorOut').textContent = depthXor;
+  document.getElementById('depthXorResult').style.display = 'block';
+  document.getElementById('toCribXorBtn').style.display = 'inline-flex';
+
+  // Pre-fill next step
+  document.getElementById('xorInput').value = depthXor;
+});
+
+// ══════════════════════════════════
+// STEP 4 — Crib drag on XOR
+// ══════════════════════════════════
+const workspaceEntries = [];
+
+document.getElementById('cribXorBtn').addEventListener('click', () => {
+  const xor    = normalize(document.getElementById('xorInput').value);
+  const crib   = normalize(document.getElementById('cribXorWord').value);
+  const offset = parseInt(document.getElementById('cribXorOffset').value) || 0;
+
+  if(!xor || !crib) return;
+
+  const recovered = cribDragXor(xor, crib, offset);
+
+  document.getElementById('cribXorWordDisplay').textContent   = crib;
+  document.getElementById('cribXorOffsetDisplay').textContent = offset;
+  document.getElementById('cribXorRecovered').textContent     = recovered;
+
+  // Hint: does it look like readable text?
+  const hint = document.getElementById('cribXorHint');
+  const readable = /^[A-Z ]+$/.test(recovered) &&
+    ['THE','AND','ING','ENT','ION'].some(w => recovered.includes(w));
+  hint.innerHTML = readable
+    ? `<div class="callout callout-green">Похоже на осмысленный текст! Криб <strong class="amber">${crib}</strong> вероятно правильный.</div>`
+    : `<div class="callout">Попробуй другое слово или другую позицию.</div>`;
+
+  document.getElementById('cribXorResult').style.display = 'block';
+  workspaceEntries.push({ crib, offset, recovered });
+});
+
+document.getElementById('addToWorkspace').addEventListener('click', () => {
+  const ws = document.getElementById('workspace');
+  if(workspaceEntries.length === 0) return;
+  const last = workspaceEntries[workspaceEntries.length - 1];
+  const row = document.createElement('div');
+  row.className = 'ws-entry';
+  row.innerHTML = `<span class="ws-crib">${last.crib}</span>
+    <span class="ws-pos">@pos ${last.offset}</span>
+    <span class="ws-arrow dim">→ P₂ содержит:</span>
+    <span class="ws-recovered">${last.recovered}</span>`;
+  ws.appendChild(row);
+});
+
+document.getElementById('revealDepthBtn').addEventListener('click', () => {
+  const p1El = document.getElementById('revealP1');
+  const p2El = document.getElementById('revealP2');
+
+  [depthP1val, depthP2val].forEach((text, idx) => {
+    const el = idx === 0 ? p1El : p2El;
+    el.innerHTML = '';
+    (text || (idx===0 ? 'SENDTROOPS':'MEETATDAWN')).split('').forEach((ch, i) => {
+      const s = document.createElement('span');
+      s.className = 'flip-char';
+      s.style.animationDelay = (i*0.04)+'s';
+      s.textContent = ch;
+      el.appendChild(s);
+    });
+  });
+
+  document.getElementById('depthRevealResult').style.display = 'block';
+
+  // Mark complete
+  localStorage.setItem('done_venona','1');
+  const newLvl = ['vigenere','enigma','venona'].filter(o=>localStorage.getItem('done_'+o)).length;
+  document.getElementById('clearanceLevel').textContent = newLvl;
+  document.getElementById('clearanceFill').style.width = (newLvl/3*100)+'%';
+});
+
+// Pre-fill XOR input if coming from step 3
+if(depthXor) document.getElementById('xorInput').value = depthXor;
+</script>
+
+<script src="js/ui/common.js"></script>
+</body>
+</html>

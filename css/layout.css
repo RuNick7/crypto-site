@@ -1,0 +1,326 @@
+/* ── Navigation ── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: rgba(10, 10, 15, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 52px;
+}
+
+.nav-logo {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--amber);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nav-logo span { color: var(--text-dim); font-size: 0.75rem; }
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+}
+
+.nav-links a {
+  display: block;
+  padding: 0.3em 0.9em;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  transition: all var(--transition);
+}
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--amber);
+  border-color: var(--amber-dim);
+}
+
+.nav-clearance {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.nav-clearance .level {
+  color: var(--green);
+  font-size: 0.9rem;
+}
+
+/* ── Page wrapper ── */
+.page {
+  padding-top: 52px;
+  min-height: 100vh;
+}
+
+/* ── Section containers ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section-hero {
+  padding: 4rem 0 3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-hero .op-tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.section-content {
+  padding: 2.5rem 0;
+}
+
+/* ── Interactive panels ── */
+.panel {
+  margin: 2rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.panel-header {
+  background: var(--bg-card);
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header h3 {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin: 0;
+}
+
+.panel-body {
+  padding: 1.5rem;
+  background: #0c0c13;
+}
+
+/* ── Two-column layout ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* ── Mobile nav toggle ── */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-burger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--amber);
+  border-radius: 1px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+@media (max-width: 640px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    background: rgba(10,10,15,0.97);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: 0.5rem 0;
+    z-index: 499;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 0.6em 1.5em; border: none; }
+  .nav-burger { display: flex; }
+  .nav-clearance { display: none; }
+}
+
+/* ── Label ── */
+.label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.4em;
+}
+
+/* ── Cipher text display ── */
+.cipher-output {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8em 1em;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--green);
+  word-break: break-all;
+  line-height: 1.8;
+  min-height: 48px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Frequency chart container ── */
+.freq-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 80px;
+  padding: 0.5rem 0 0;
+}
+
+.freq-bar {
+  flex: 1;
+  background: var(--amber-dim);
+  border-radius: 2px 2px 0 0;
+  transition: height 0.3s ease, background 0.2s;
+  min-width: 6px;
+  position: relative;
+  cursor: pointer;
+}
+.freq-bar:hover { background: var(--amber); }
+.freq-bar .bar-label {
+  position: absolute;
+  bottom: -1.3em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+.freq-bar.highlight { background: var(--green); }
+
+.freq-labels {
+  display: flex;
+  gap: 3px;
+  padding-top: 0.25rem;
+}
+.freq-labels span {
+  flex: 1;
+  text-align: center;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  min-width: 6px;
+}
+
+/* ── Highlighted text spans ── */
+.hl-amber { background: rgba(245,166,35,0.25); color: var(--amber); border-radius: 2px; }
+.hl-green { background: rgba(0,255,65,0.15); color: var(--green); border-radius: 2px; }
+.hl-red   { background: rgba(255,51,51,0.2); color: var(--red); border-radius: 2px; }
+
+/* ── Divider ── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* ── Callout boxes ── */
+.callout {
+  border-left: 3px solid var(--amber);
+  background: rgba(245,166,35,0.06);
+  padding: 0.8em 1em;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+.callout-red {
+  border-color: var(--red);
+  background: rgba(255,51,51,0.06);
+}
+.callout-green {
+  border-color: var(--green);
+  background: rgba(0,255,65,0.05);
+}
+
+/* ── History cards on main page ── */
+.ops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  padding: 2.5rem 0;
+}
+
+.op-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: border-color var(--transition), transform var(--transition);
+  text-decoration: none;
+  display: block;
+}
+.op-card:hover {
+  border-color: var(--amber);
+  transform: translateY(-3px);
+  color: var(--text);
+}
+
+.op-card .op-num {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.op-card h2 {
+  font-size: 1.4rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.op-card .op-era {
+  font-size: 0.8rem;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+}
+
+.op-card p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.op-card .op-badge {
+  margin-top: 1.25rem;
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--border);
+  padding: 0.2em 0.6em;
+  border-radius: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}

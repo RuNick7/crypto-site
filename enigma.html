@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Операция ЭНИГМА — Секретный Архив</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/design.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">← АРХИВ</a>
+  <ul class="nav-links">
+    <li><a href="vigenere.html">ОП. ВИГЕНЕР</a></li>
+    <li><a href="enigma.html" class="active">ОП. ЭНИГМА</a></li>
+    <li><a href="venona.html">ОП. ВЕНОНА</a></li>
+  </ul>
+  <div class="nav-clearance">ДОПУСК <span class="level" id="clearanceLevel">0</span>/3</div>
+  <button class="nav-burger" id="navBurger" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page">
+  <section class="section-hero" data-op="02">
+    <div class="container">
+      <div class="op-tag">ОПЕРАЦИЯ 02 · 1939–1945 · ВТОРАЯ МИРОВАЯ ВОЙНА</div>
+      <h1>Машина Энигма</h1>
+      <p class="mt-2" style="max-width:620px; color:var(--text-dim)">
+        158 квинтиллионов возможных конфигураций. Немцы считали её невзламываемой.
+        Алан Тьюринг в Блетчли Парке думал иначе — и оказался прав.
+      </p>
+
+      <div class="steps mt-3" id="stepsNav">
+        <div class="step-dot active" data-step="0" title="Как работает Энигма">1</div>
+        <div class="step-dot" data-step="1" title="Симулятор машины">2</div>
+        <div class="step-dot" data-step="2" title="Метод криба">3</div>
+        <div class="step-dot" data-step="3" title="Бомба Тьюринга">4</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-content">
+    <div class="container">
+
+      <!-- ═══ STEP 0: How Enigma works ═══ -->
+      <div class="step-panel" id="step0">
+        <h2>Как работает Энигма?</h2>
+        <p class="mt-2" style="color:var(--text-dim)">
+          Энигма — это электромеханическая машина. При нажатии на букву электрический сигнал
+          проходит через три вращающихся ротора, отражается от рефлектора и возвращается обратно — уже другой буквой.
+        </p>
+
+        <div class="grid-2 mt-3" style="gap:1.5rem">
+          <div>
+            <div class="callout">
+              <strong class="amber">Ключевые компоненты:</strong><br><br>
+              <span class="green">Штекерная панель</span> — меняет местами пары букв до и после роторов<br><br>
+              <span class="green">3 ротора</span> — каждый содержит перестановку из 26 букв. После каждой нажатой клавиши правый ротор поворачивается на 1 позицию<br><br>
+              <span class="green">Рефлектор</span> — отражает сигнал обратно по другому пути, делая шифрование симметричным<br><br>
+              <span class="amber">Главная уязвимость:</span> буква <strong>никогда не шифруется сама в себя!
+              </strong>
+            </div>
+          </div>
+
+          <div>
+            <!-- SVG schematic of Enigma signal path -->
+            <svg viewBox="0 0 320 300" style="width:100%; max-width:320px; display:block; margin:0 auto" id="enigmaSchematic">
+              <!-- Background -->
+              <rect width="320" height="300" fill="#0c0c13" rx="6"/>
+
+              <!-- Labels -->
+              <text x="160" y="20" text-anchor="middle" fill="#666680" font-size="9" font-family="Share Tech Mono">СИГНАЛ →</text>
+
+              <!-- Keyboard -->
+              <rect x="10" y="30" width="60" height="24" fill="#111118" stroke="#2a2a3a" rx="3"/>
+              <text x="40" y="46" text-anchor="middle" fill="#c8c8c8" font-size="9" font-family="Share Tech Mono">КЛАВИШИ</text>
+
+              <!-- Plugboard -->
+              <rect x="10" y="70" width="60" height="24" fill="#111118" stroke="#f5a623" rx="3"/>
+              <text x="40" y="86" text-anchor="middle" fill="#f5a623" font-size="9" font-family="Share Tech Mono">ШТЕКЕР</text>
+
+              <!-- Rotors -->
+              <rect x="90" y="55" width="44" height="54" fill="#111118" stroke="#00ff41" rx="3"/>
+              <text x="112" y="74" text-anchor="middle" fill="#00ff41" font-size="8" font-family="Share Tech Mono">РОТОР</text>
+              <text x="112" y="86" text-anchor="middle" fill="#00ff41" font-size="10" font-family="Share Tech Mono">III</text>
+              <text x="112" y="100" text-anchor="middle" fill="#666680" font-size="7" font-family="Share Tech Mono">правый</text>
+
+              <rect x="144" y="55" width="44" height="54" fill="#111118" stroke="#00ff41" rx="3"/>
+              <text x="166" y="74" text-anchor="middle" fill="#00ff41" font-size="8" font-family="Share Tech Mono">РОТОР</text>
+              <text x="166" y="86" text-anchor="middle" fill="#00ff41" font-size="10" font-family="Share Tech Mono">II</text>
+              <text x="166" y="100" text-anchor="middle" fill="#666680" font-size="7" font-family="Share Tech Mono">средний</text>
+
+              <rect x="198" y="55" width="44" height="54" fill="#111118" stroke="#00ff41" rx="3"/>
+              <text x="220" y="74" text-anchor="middle" fill="#00ff41" font-size="8" font-family="Share Tech Mono">РОТОР</text>
+              <text x="220" y="86" text-anchor="middle" fill="#00ff41" font-size="10" font-family="Share Tech Mono">I</text>
+              <text x="220" y="100" text-anchor="middle" fill="#666680" font-size="7" font-family="Share Tech Mono">левый</text>
+
+              <!-- Reflector -->
+              <rect x="252" y="55" width="58" height="54" fill="#111118" stroke="#ff3333" rx="3"/>
+              <text x="281" y="79" text-anchor="middle" fill="#ff3333" font-size="8" font-family="Share Tech Mono">РЕФЛЕКТ.</text>
+              <text x="281" y="91" text-anchor="middle" fill="#ff3333" font-size="7" font-family="Share Tech Mono">UKW-B</text>
+
+              <!-- Lamp board -->
+              <rect x="10" y="110" width="60" height="24" fill="#111118" stroke="#2a2a3a" rx="3"/>
+              <text x="40" y="126" text-anchor="middle" fill="#c8c8c8" font-size="9" font-family="Share Tech Mono">ЛАМПОЧКИ</text>
+
+              <!-- Signal path animation -->
+              <!-- Forward path -->
+              <path id="sp1" d="M40,54 L40,70" stroke="#f5a623" stroke-width="1.5" fill="none" stroke-dasharray="16" stroke-dashoffset="16"/>
+              <path id="sp2" d="M70,82 L90,82" stroke="#f5a623" stroke-width="1.5" fill="none" stroke-dasharray="20" stroke-dashoffset="20"/>
+              <path id="sp3" d="M134,82 L144,82" stroke="#f5a623" stroke-width="1.5" fill="none" stroke-dasharray="10" stroke-dashoffset="10"/>
+              <path id="sp4" d="M188,82 L198,82" stroke="#f5a623" stroke-width="1.5" fill="none" stroke-dasharray="10" stroke-dashoffset="10"/>
+              <path id="sp5" d="M242,82 L252,82" stroke="#f5a623" stroke-width="1.5" fill="none" stroke-dasharray="10" stroke-dashoffset="10"/>
+              <!-- Return path -->
+              <path id="sp6" d="M252,90 L198,90" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-dasharray="54" stroke-dashoffset="54"/>
+              <path id="sp7" d="M198,90 L144,90" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-dasharray="54" stroke-dashoffset="54"/>
+              <path id="sp8" d="M144,90 L90,90" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-dasharray="54" stroke-dashoffset="54"/>
+              <path id="sp9" d="M90,90 L70,90" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-dasharray="20" stroke-dashoffset="20"/>
+              <path id="sp10" d="M40,94 L40,110" stroke="#00ff41" stroke-width="1.5" fill="none" stroke-dasharray="16" stroke-dashoffset="16"/>
+
+              <!-- Legend -->
+              <circle cx="14" cy="165" r="3" fill="#f5a623"/>
+              <text x="22" y="169" fill="#c8c8c8" font-size="9" font-family="Share Tech Mono">прямой путь</text>
+              <circle cx="14" cy="182" r="3" fill="#00ff41"/>
+              <text x="22" y="186" fill="#c8c8c8" font-size="9" font-family="Share Tech Mono">обратный путь</text>
+
+              <!-- Key insight box -->
+              <rect x="10" y="198" width="300" height="90" fill="#1a0808" stroke="#ff3333" rx="4"/>
+              <text x="160" y="216" text-anchor="middle" fill="#ff3333" font-size="9" font-family="Share Tech Mono">⚠ КРИТИЧЕСКАЯ УЯЗВИМОСТЬ</text>
+              <text x="160" y="232" text-anchor="middle" fill="#c8c8c8" font-size="8.5" font-family="Share Tech Mono">Рефлектор делает шифрование</text>
+              <text x="160" y="246" text-anchor="middle" fill="#c8c8c8" font-size="8.5" font-family="Share Tech Mono">симметричным: если A→Z, то Z→A.</text>
+              <text x="160" y="262" text-anchor="middle" fill="#f5a623" font-size="8.5" font-family="Share Tech Mono">Следствие: буква НИКОГДА не</text>
+              <text x="160" y="276" text-anchor="middle" fill="#f5a623" font-size="8.5" font-family="Share Tech Mono">шифруется сама в себя.</text>
+              <text x="160" y="292" text-anchor="middle" fill="#ff3333" font-size="8.5" font-family="Share Tech Mono">Именно это использовал Тьюринг!</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-lg" onclick="goStep(1)">К СИМУЛЯТОРУ &nbsp;<span style="opacity:.7">›</span></button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 1: Enigma simulator ═══ -->
+      <div class="step-panel" id="step1" style="display:none">
+        <h2>Симулятор Энигмы</h2>
+        <p class="mt-2" style="color:var(--text-dim)">
+          Настрой роторы и нажимай буквы. Наблюдай, как сигнал проходит через машину.
+        </p>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Настройки машины</h3></div>
+          <div class="panel-body">
+            <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Ротор I (левый)</label>
+                <select id="r1sel" class="enigma-select">
+                  <option value="I">I</option><option value="II">II</option>
+                  <option value="III" selected>III</option><option value="IV">IV</option><option value="V">V</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Ротор II (средний)</label>
+                <select id="r2sel" class="enigma-select">
+                  <option value="I">I</option><option value="II" selected>II</option>
+                  <option value="III">III</option><option value="IV">IV</option><option value="V">V</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Ротор III (правый)</label>
+                <select id="r3sel" class="enigma-select">
+                  <option value="I" selected>I</option><option value="II">II</option>
+                  <option value="III">III</option><option value="IV">IV</option><option value="V">V</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Рефлектор</label>
+                <select id="reflsel" class="enigma-select">
+                  <option value="B" selected>B (Умкер Б)</option>
+                  <option value="C">C (Умкер Ц)</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem">
+              <div>
+                <label class="label">Нач. позиция</label>
+                <div style="display:flex; gap:0.5rem">
+                  <input type="text" id="pos1" value="A" maxlength="1" style="width:42px; text-align:center; text-transform:uppercase" class="rotor-pos">
+                  <input type="text" id="pos2" value="A" maxlength="1" style="width:42px; text-align:center; text-transform:uppercase" class="rotor-pos">
+                  <input type="text" id="pos3" value="A" maxlength="1" style="width:42px; text-align:center; text-transform:uppercase" class="rotor-pos">
+                </div>
+              </div>
+              <div>
+                <label class="label">Штекерная панель (напр. AB CD)</label>
+                <input type="text" id="plugInput" placeholder="AB CD EF" style="width:200px; text-transform:uppercase">
+              </div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="resetMachine">↺ СБРОСИТЬ</button>
+          </div>
+        </div>
+
+        <!-- Machine visual + keyboard -->
+        <div class="panel mt-3">
+          <div class="panel-header">
+            <h3>Машина</h3>
+            <div style="font-size:0.8rem; color:var(--text-dim)">
+              Позиции: <span class="green" id="curPositions">A A A</span>
+            </div>
+          </div>
+          <div class="panel-body">
+            <!-- Rotor display -->
+            <div class="rotor-display" id="rotorDisplay">
+              <div class="rotor-ring" id="rDisp1"><span>A</span></div>
+              <div class="rotor-ring" id="rDisp2"><span>A</span></div>
+              <div class="rotor-ring" id="rDisp3"><span>A</span></div>
+            </div>
+
+            <!-- Signal path display -->
+            <div id="signalPath" class="signal-path-display" style="display:none"></div>
+
+            <!-- Keyboard -->
+            <div class="enigma-keyboard" id="enigmaKeyboard"></div>
+
+            <!-- Lampboard -->
+            <div class="lampboard" id="lampboard"></div>
+
+            <!-- Output -->
+            <div class="mt-2">
+              <div class="grid-2" style="gap:1rem">
+                <div>
+                  <label class="label">Введённый текст</label>
+                  <div class="cipher-output" id="enigmaInput" style="color:var(--white); min-height:40px"></div>
+                </div>
+                <div>
+                  <label class="label">Зашифрованный текст</label>
+                  <div class="cipher-output" id="enigmaOutput" style="min-height:40px"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="callout mt-3" id="selfEncNote" style="display:none">
+              <strong class="red">Попробуй ввести ту же букву в «Введённый текст»:</strong>
+              результат никогда не совпадёт — буква не может зашифровать сама себя!
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-lg" onclick="goStep(2)">К МЕТОДУ КРИБА &nbsp;<span style="opacity:.7">›</span></button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 2: Crib dragging ═══ -->
+      <div class="step-panel" id="step2" style="display:none">
+        <h2>Метод «криба» — Crib Dragging</h2>
+        <div class="callout mt-2">
+          <strong class="amber">Как это работает?</strong><br>
+          Немецкие операторы часто заканчивали сообщения стандартными фразами.
+          Тьюринг использовал это: берём предполагаемую фразу (криб) и «перетаскиваем»
+          её по шифртексту. Где буква криба совпадает с буквой шифртекста — эта позиция
+          <strong class="red">невозможна</strong> (Энигма не шифрует букву в себя!).
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header">
+            <h3>Перехваченное сообщение</h3>
+            <span class="stamp" style="font-size:0.6rem; transform:rotate(-3deg)">BLETCHLEY PARK</span>
+          </div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Шифртекст</label>
+                <input type="text" id="cribCipher" value="QMJIDOMZWZJFJR" style="text-transform:uppercase; letter-spacing:0.1em">
+              </div>
+              <div>
+                <label class="label">Криб (предполагаемый открытый текст)</label>
+                <input type="text" id="cribText" value="WEATHER" style="text-transform:uppercase; letter-spacing:0.1em">
+              </div>
+            </div>
+            <button class="btn btn-primary" id="cribAnalyzeBtn">⌕ ПРИМЕНИТЬ КРИБ-ДРАГГИНГ</button>
+
+            <div id="cribResult" class="mt-3" style="display:none">
+              <label class="label">Результат (красный = невозможная позиция, зелёный = возможная)</label>
+              <div id="cribTable" class="crib-table"></div>
+
+              <div class="mt-2" id="cribSummary"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-lg" onclick="goStep(3)">К БОМБЕ ТЬЮРИНГА &nbsp;<span style="opacity:.7">›</span></button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 3: Bombe ═══ -->
+      <div class="step-panel" id="step3" style="display:none">
+        <h2>Бомба Тьюринга</h2>
+        <div class="callout mt-2">
+          <strong class="amber">Принцип:</strong> Бомба — это несколько Энигм, соединённых последовательно.
+          Она перебирает все 17 576 позиций роторов и отбрасывает те, где возникает
+          логическое противоречие (буква шифрует сама себя).
+          За 15–20 минут она сужала круг с 17 576 до десятков вариантов.
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Симуляция перебора</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Шифртекст для атаки</label>
+                <input type="text" id="bombeCtInput" value="QMJIDOMZWZJFJR" style="text-transform:uppercase">
+              </div>
+              <div>
+                <label class="label">Криб (известный фрагмент)</label>
+                <input type="text" id="bombeCribInput" value="WEATHER" style="text-transform:uppercase">
+              </div>
+            </div>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem">
+              <div>
+                <label class="label">Роторы</label>
+                <select id="bombeR1" class="enigma-select"><option>I</option><option>II</option><option selected>III</option><option>IV</option><option>V</option></select>
+                <select id="bombeR2" class="enigma-select" style="margin-left:4px"><option>I</option><option selected>II</option><option>III</option><option>IV</option><option>V</option></select>
+                <select id="bombeR3" class="enigma-select" style="margin-left:4px"><option selected>I</option><option>II</option><option>III</option><option>IV</option><option>V</option></select>
+              </div>
+              <div>
+                <label class="label">Проверить позиций</label>
+                <input type="text" id="bombeMaxTests" value="2000" style="width:80px">
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg" id="bombeStartBtn">⚙ ЗАПУСТИТЬ БОМБУ</button>
+
+            <!-- Bombe visual -->
+            <div id="bombeVisual" class="mt-3" style="display:none">
+              <div class="bombe-counter">
+                <span class="dim">Протестировано:</span>
+                <span class="amber" id="bombeTestedCount">0</span>
+                / <span id="bombeTotalCount">2000</span>
+              </div>
+
+              <!-- Animated drums -->
+              <div class="bombe-drums" id="bombeDrums">
+                <div class="drum" id="drum1"><span>A</span></div>
+                <div class="drum" id="drum2"><span>A</span></div>
+                <div class="drum" id="drum3"><span>A</span></div>
+              </div>
+
+              <!-- Progress bar -->
+              <div class="bombe-progress-bar">
+                <div id="bombeProgressFill" style="width:0%"></div>
+              </div>
+
+              <!-- Results -->
+              <div id="bombeStops" class="mt-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decrypt with found key -->
+        <div class="panel mt-3" id="bombeDecryptPanel" style="display:none">
+          <div class="panel-header"><h3>Расшифровка с найденной конфигурацией</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Шифртекст</label>
+                <input type="text" id="bdCipher" style="text-transform:uppercase">
+              </div>
+              <div>
+                <label class="label">Конфигурация (3 буквы)</label>
+                <input type="text" id="bdConfig" maxlength="3" style="width:80px; text-transform:uppercase">
+              </div>
+            </div>
+            <button class="btn btn-green" id="bdDecryptBtn">▷ РАСШИФРОВАТЬ С НАЙДЕННЫМ КЛЮЧОМ</button>
+            <div class="mt-2">
+              <div class="cipher-output" id="bdOutput" style="color:var(--amber)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-green mt-3" id="enigmaDoneNote" style="display:none">
+          <strong class="green">✓ Операция выполнена.</strong> Именно так работала Бомба в Блетчли Парке —
+          ежедневно обрабатывая тысячи перехваченных немецких сообщений.
+        </div>
+
+        <div class="mt-3 text-center">
+          <a href="venona.html" class="btn btn-green btn-lg">
+            СЛЕДУЮЩАЯ: ОП. ВЕНОНА &nbsp;<span style="opacity:.7">›</span>
+          </a>
+          <a href="index.html" class="btn btn-ghost" style="margin-left:0.75rem">← В АРХИВ</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="clearance-bar"><div class="clearance-fill" id="clearanceFill" style="width:0%"></div></div>
+
+<style>
+/* ── Rotor display layout ── */
+.rotor-display {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin: 1rem 0;
+}
+
+.rotor-ring.clicking {
+  animation: rotorClickAnim 0.22s ease;
+}
+@keyframes rotorClickAnim {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(16deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* ── Signal path display ── */
+.signal-path-display {
+  background: rgba(0,5,0,0.5);
+  border: 1px solid rgba(0,255,65,0.08);
+  border-left: 2px solid rgba(0,255,65,0.2);
+  padding: 0.55rem 1rem;
+  font-size: 0.76rem;
+  margin: 0.5rem 0;
+  color: var(--text-dim);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  align-items: center;
+  min-height: 36px;
+}
+.sp-stage {
+  padding: 2px 7px;
+  font-size: 0.74rem;
+  white-space: nowrap;
+  border-radius: 2px;
+}
+.sp-arrow { color: var(--border); font-size: 0.65rem; }
+
+/* ── Keyboard layout ── */
+.enigma-keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin: 1.25rem 0 0.75rem;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Lampboard layout ── */
+.lampboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin: 0.5rem 0 1.25rem;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Crib table ── */
+.crib-table { font-size: 0.8rem; overflow-x: auto; }
+.crib-row   { display: flex; align-items: center; gap: 0.25rem; margin-bottom: 4px; flex-wrap: nowrap; }
+.crib-offset { width: 44px; color: var(--text-dim); font-size: 0.72rem; flex-shrink: 0; font-family: var(--btn-font); }
+.crib-cell   { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.74rem; }
+.crib-ct     { border: 1px solid rgba(255,255,255,0.08); color: var(--text-dim); }
+.crib-ok     { background: rgba(0,255,65,0.12); color: var(--green);  border: 1px solid rgba(0,255,65,0.25); }
+.crib-bad    { background: rgba(255,51,51,0.15); color: var(--red);   border: 1px solid rgba(255,51,51,0.3); text-decoration: line-through; }
+.crib-empty  { width: 22px; height: 22px; }
+.crib-status-ok  { color: var(--green); font-size: 0.72rem; margin-left: 0.5rem; font-family: var(--btn-font); }
+.crib-status-bad { color: var(--red);   font-size: 0.72rem; margin-left: 0.5rem; font-family: var(--btn-font); text-decoration: line-through; }
+
+/* ── Bombe ── */
+.bombe-counter { font-size: 0.85rem; margin-bottom: 0.75rem; font-family: var(--btn-font); letter-spacing: 0.08em; }
+.bombe-drums   { display: flex; gap: 1rem; margin-bottom: 0.75rem; align-items: center; }
+
+.drum.spinning {
+  animation: drumRollFast 0.07s steps(1) infinite;
+  border-color: var(--amber);
+  color: var(--amber);
+}
+@keyframes drumRollFast {
+  0%  { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-4px) scaleY(0.94); }
+}
+
+.bombe-progress-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+}
+.bombe-progress-bar div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--green));
+  transition: width 0.12s linear;
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(245,166,35,0.4);
+}
+
+.bombe-stop {
+  background: rgba(0,255,65,0.05);
+  border: 1px solid rgba(0,255,65,0.2);
+  border-left: 2px solid var(--green);
+  padding: 0.55rem 0.85rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.83rem;
+  font-family: var(--btn-font);
+  animation: popIn 0.3s ease;
+}
+.bombe-stop .pos {
+  color: var(--green);
+  font-size: 1.15rem;
+  letter-spacing: 0.25em;
+  font-family: 'Bebas Neue', var(--font-title);
+}
+</style>
+
+<script type="module">
+import { EnigmaMachine, bombeSearch, cribDrag, ALPHA } from './js/ciphers/enigma.js';
+
+// ── Utils ──
+function getPos(id) {
+  const v = document.getElementById(id).value.toUpperCase().trim();
+  return v ? ALPHA.indexOf(v[0]) : 0;
+}
+function getMachine() {
+  const rotors  = [document.getElementById('r1sel').value,
+                   document.getElementById('r2sel').value,
+                   document.getElementById('r3sel').value];
+  const refl    = document.getElementById('reflsel').value;
+  const pos     = [getPos('pos1'), getPos('pos2'), getPos('pos3')];
+  const plugRaw = document.getElementById('plugInput').value.toUpperCase().replace(/[^A-Z ]/g,'');
+  const pairs   = plugRaw.split(' ').filter(p => p.length === 2).map(p => [p[0],p[1]]);
+  return new EnigmaMachine(rotors, refl, pos, [0,0,0], pairs);
+}
+
+// ── Step nav ──
+let currentStep = 0;
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('step'+n).style.display = 'block';
+  document.getElementById('step'+n).classList.add('fade-up');
+  currentStep = n;
+  document.querySelectorAll('.step-dot').forEach((d,i) => {
+    d.classList.remove('active','done');
+    if(i < n) d.classList.add('done');
+    if(i === n) d.classList.add('active');
+  });
+  window.scrollTo({top:60,behavior:'smooth'});
+  if(n === 1) initMachine();
+}
+document.querySelectorAll('.step-dot').forEach(d => {
+  d.addEventListener('click', () => goStep(+d.dataset.step));
+});
+window.goStep = goStep;
+
+// ── Clearance ──
+const lvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+document.getElementById('clearanceLevel').textContent = lvl;
+document.getElementById('clearanceFill').style.width = (lvl/3*100)+'%';
+
+// ── SVG signal animation ──
+function animateSVGPath() {
+  const paths = document.querySelectorAll('#enigmaSchematic [id^="sp"]');
+  paths.forEach((p, i) => {
+    const len = p.getTotalLength ? p.getTotalLength() : 20;
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+    setTimeout(() => {
+      p.style.transition = 'stroke-dashoffset 0.25s ease';
+      p.style.strokeDashoffset = '0';
+    }, i * 120);
+    setTimeout(() => {
+      p.style.strokeDashoffset = len;
+    }, i * 120 + 1200);
+  });
+}
+document.getElementById('enigmaSchematic').addEventListener('click', animateSVGPath);
+setTimeout(animateSVGPath, 1000);
+
+// ══════════════════════════════════
+// STEP 1 — Simulator
+// ══════════════════════════════════
+let machine;
+let inputStr  = '';
+let outputStr = '';
+
+function initMachine() {
+  machine = getMachine();
+  inputStr  = '';
+  outputStr = '';
+  updateRotorDisplay();
+  document.getElementById('enigmaInput').textContent  = '';
+  document.getElementById('enigmaOutput').textContent = '';
+  document.getElementById('signalPath').style.display = 'none';
+  clearLamps();
+}
+
+document.getElementById('resetMachine').addEventListener('click', initMachine);
+
+// Build keyboard + lampboard
+const ROWS = ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'];
+function buildKeyboard() {
+  const kb = document.getElementById('enigmaKeyboard');
+  const lb = document.getElementById('lampboard');
+  ROWS.forEach(row => {
+    row.split('').forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'key-btn';
+      btn.textContent = ch;
+      btn.dataset.letter = ch;
+      btn.addEventListener('click', () => pressKey(ch));
+      kb.appendChild(btn);
+
+      const lamp = document.createElement('div');
+      lamp.className = 'lamp';
+      lamp.id = 'lamp_'+ch;
+      lamp.textContent = ch;
+      lb.appendChild(lamp);
+    });
+  });
+}
+
+function clearLamps() {
+  document.querySelectorAll('.lamp').forEach(l => l.classList.remove('lit'));
+}
+
+function updateRotorDisplay() {
+  if(!machine) return;
+  const pos = machine.getPositions();
+  ['rDisp1','rDisp2','rDisp3'].forEach((id, i) => {
+    document.getElementById(id).querySelector('span').textContent = ALPHA[pos[i]];
+  });
+  document.getElementById('curPositions').textContent = pos.map(p => ALPHA[p]).join(' ');
+}
+
+function pressKey(letter) {
+  if(!machine) initMachine();
+  clearLamps();
+
+  const result = machine.encodeLetter(letter);
+  if(!result) return;
+
+  // Animate rotor ring
+  const rightRing = document.getElementById('rDisp3');
+  rightRing.classList.add('clicking');
+  setTimeout(() => rightRing.classList.remove('clicking'), 200);
+
+  // Light lamp
+  const lamp = document.getElementById('lamp_'+result.output);
+  if(lamp) lamp.classList.add('lit');
+
+  // Flash key
+  const keyBtn = document.querySelector(`.key-btn[data-letter="${letter}"]`);
+  if(keyBtn) {
+    keyBtn.classList.add('pressed');
+    setTimeout(()=>keyBtn.classList.remove('pressed'), 150);
+  }
+
+  inputStr  += letter;
+  outputStr += result.output;
+  document.getElementById('enigmaInput').textContent  = inputStr;
+  document.getElementById('enigmaOutput').textContent = outputStr;
+
+  updateRotorDisplay();
+
+  // Show signal path
+  const sp = document.getElementById('signalPath');
+  sp.style.display = 'flex';
+  sp.innerHTML = result.path.map(s => {
+    const col = s.stage === 'reflector' ? 'var(--red)' :
+                s.stage.includes('fwd') ? 'var(--amber)' :
+                s.stage.includes('plugboard') ? 'var(--text-dim)' : 'var(--green)';
+    const lbl = s.stage.replace(/_/g,' ');
+    return `<span class="sp-stage" style="color:${col}; border:1px solid ${col}20">
+              ${s.in}→${s.out}
+              <span style="font-size:0.6rem; opacity:0.7; display:block">${lbl}</span>
+            </span>
+            <span class="sp-arrow">›</span>`;
+  }).join('');
+
+  document.getElementById('selfEncNote').style.display = 'block';
+}
+
+buildKeyboard();
+initMachine();
+
+// ══════════════════════════════════
+// STEP 2 — Crib dragging
+// ══════════════════════════════════
+document.getElementById('cribAnalyzeBtn').addEventListener('click', () => {
+  const ct   = document.getElementById('cribCipher').value.toUpperCase().replace(/[^A-Z]/g,'');
+  const crib = document.getElementById('cribText').value.toUpperCase().replace(/[^A-Z]/g,'');
+  const { possible, impossible } = cribDrag(ct, crib);
+
+  const table = document.getElementById('cribTable');
+  table.innerHTML = '';
+
+  // Header row: cipher text
+  const header = document.createElement('div');
+  header.className = 'crib-row';
+  header.innerHTML = `<div class="crib-offset">Позиция</div>` +
+    ct.split('').map((c,i) => `<div class="crib-cell crib-ct">${c}</div>`).join('') +
+    `<div style="width:80px"></div>`;
+  table.appendChild(header);
+
+  for(let offset = 0; offset + crib.length <= ct.length; offset++) {
+    const row = document.createElement('div');
+    row.className = 'crib-row';
+    const isImpossible = impossible.includes(offset);
+
+    let cells = `<div class="crib-offset" style="color:${isImpossible?'var(--red)':'var(--green)'}">${offset}</div>`;
+    // empty cells before crib
+    for(let i = 0; i < offset; i++) cells += `<div class="crib-empty"></div>`;
+    // crib cells
+    for(let i = 0; i < crib.length; i++) {
+      const ctCh   = ct[offset+i];
+      const cribCh = crib[i];
+      const clash  = ctCh === cribCh;
+      cells += `<div class="crib-cell ${clash ? 'crib-bad' : 'crib-ok'}" title="${cribCh} vs ${ctCh}">${cribCh}</div>`;
+    }
+
+    cells += `<div class="${isImpossible ? 'crib-status-bad' : 'crib-status-ok'}">${isImpossible ? '✗ невозможно' : '✓ возможно'}</div>`;
+    row.innerHTML = cells;
+    table.appendChild(row);
+  }
+
+  const summary = document.getElementById('cribSummary');
+  summary.innerHTML = `
+    <div class="callout callout-green">
+      <strong class="green">Итог:</strong>
+      <strong class="green">${possible.length}</strong> возможных позиций,
+      <strong class="red">${impossible.length}</strong> отброшены.<br>
+      Бомба Тьюринга теперь тестирует только оставшиеся — что резко сокращает перебор.
+    </div>`;
+
+  document.getElementById('cribResult').style.display = 'block';
+});
+
+// ══════════════════════════════════
+// STEP 3 — Bombe
+// ══════════════════════════════════
+let bombeRunning = false;
+
+document.getElementById('bombeStartBtn').addEventListener('click', async () => {
+  if(bombeRunning) return;
+  bombeRunning = true;
+  document.getElementById('bombeStartBtn').textContent = 'РАБОТАЕТ...';
+  document.getElementById('bombeStartBtn').disabled = true;
+
+  const ct       = document.getElementById('bombeCtInput').value.toUpperCase().replace(/[^A-Z]/g,'');
+  const crib     = document.getElementById('bombeCribInput').value.toUpperCase().replace(/[^A-Z]/g,'');
+  const rotors   = [document.getElementById('bombeR1').value,
+                    document.getElementById('bombeR2').value,
+                    document.getElementById('bombeR3').value];
+  const maxTests = parseInt(document.getElementById('bombeMaxTests').value) || 2000;
+
+  document.getElementById('bombeTotalCount').textContent = maxTests;
+  document.getElementById('bombeTestedCount').textContent = '0';
+  document.getElementById('bombeProgressFill').style.width = '0%';
+  document.getElementById('bombeStops').innerHTML = '';
+  document.getElementById('bombeVisual').style.display = 'block';
+  document.getElementById('bombeDecryptPanel').style.display = 'none';
+  document.getElementById('enigmaDoneNote').style.display = 'none';
+
+  // Animate drums spinning
+  ['drum1','drum2','drum3'].forEach(id => document.getElementById(id).classList.add('spinning'));
+
+  // Run in chunks to keep UI responsive
+  const CHUNK = 200;
+  let tested  = 0;
+  let stops   = [];
+
+  function chunk() {
+    return new Promise(resolve => setTimeout(() => {
+      const partial = bombeSearch(ct, crib, rotors, 'B', [0,0,0], [], CHUNK,
+        (t, total, found) => {});
+
+      // Update drums with random-looking chars while spinning
+      ['drum1','drum2','drum3'].forEach(id => {
+        const drum = document.getElementById(id);
+        drum.querySelector('span').textContent = ALPHA[Math.floor(Math.random()*26)];
+      });
+
+      tested += CHUNK;
+      stops = stops.concat(partial);
+
+      document.getElementById('bombeTestedCount').textContent = Math.min(tested, maxTests);
+      document.getElementById('bombeProgressFill').style.width = Math.min(tested/maxTests*100, 100)+'%';
+
+      resolve();
+    }, 30));
+  }
+
+  // Actually run the full search (synchronous but fast)
+  const allStops = await new Promise(resolve => {
+    setTimeout(() => {
+      const results = bombeSearch(ct, crib, rotors, 'B', [0,0,0], [], maxTests);
+      resolve(results);
+    }, 50);
+  });
+
+  // Animate counter
+  let displayCount = 0;
+  const countAnim = setInterval(() => {
+    displayCount += Math.ceil(maxTests / 40);
+    if(displayCount >= maxTests) { displayCount = maxTests; clearInterval(countAnim); }
+    document.getElementById('bombeTestedCount').textContent = displayCount;
+    document.getElementById('bombeProgressFill').style.width = (displayCount/maxTests*100)+'%';
+    ['drum1','drum2','drum3'].forEach(id => {
+      document.getElementById(id).querySelector('span').textContent = ALPHA[Math.floor(Math.random()*26)];
+    });
+  }, 40);
+
+  setTimeout(() => {
+    clearInterval(countAnim);
+    document.getElementById('bombeTestedCount').textContent = maxTests;
+    document.getElementById('bombeProgressFill').style.width = '100%';
+
+    ['drum1','drum2','drum3'].forEach(id => document.getElementById(id).classList.remove('spinning'));
+
+    if(allStops.length > 0) {
+      const firstStop = allStops[0];
+      ['drum1','drum2','drum3'].forEach((id,i) => {
+        const drum = document.getElementById(id);
+        drum.querySelector('span').textContent = firstStop.posStr[i];
+        drum.classList.add('stopped');
+      });
+
+      const container = document.getElementById('bombeStops');
+      container.innerHTML = `<p style="color:var(--green); margin-bottom:0.5rem; font-size:0.85rem">
+        ✓ Найдено ${allStops.length} совпадени${allStops.length===1?'е':'й'}:</p>`;
+      allStops.slice(0,8).forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'bombe-stop';
+        div.innerHTML = `Позиция: <span class="pos">${s.posStr}</span>`;
+        container.appendChild(div);
+      });
+
+      // Play bell sound
+      try {
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+        osc.start(); osc.stop(ctx.currentTime + 1.2);
+      } catch(e) {}
+
+      // Pre-fill decrypt
+      document.getElementById('bdCipher').value = ct;
+      document.getElementById('bdConfig').value = firstStop.posStr;
+      document.getElementById('bombeDecryptPanel').style.display = 'block';
+      document.getElementById('enigmaDoneNote').style.display = 'block';
+
+      localStorage.setItem('done_enigma','1');
+      const newLvl = ['vigenere','enigma','venona'].filter(o=>localStorage.getItem('done_'+o)).length;
+      document.getElementById('clearanceLevel').textContent = newLvl;
+    } else {
+      document.getElementById('bombeStops').innerHTML = `<p class="dim">Совпадений не найдено в диапазоне ${maxTests} позиций.
+        Попробуй увеличить количество или изменить криб/роторы.</p>`;
+    }
+
+    document.getElementById('bombeStartBtn').textContent = '⚙ ЗАПУСТИТЬ БОМБУ';
+    document.getElementById('bombeStartBtn').disabled = false;
+    bombeRunning = false;
+  }, 1800);
+});
+
+// Decrypt with found config
+document.getElementById('bdDecryptBtn').addEventListener('click', () => {
+  const ct     = document.getElementById('bdCipher').value.toUpperCase().replace(/[^A-Z]/g,'');
+  const config = document.getElementById('bdConfig').value.toUpperCase().replace(/[^A-Z]/g,'');
+  if(config.length < 3) return;
+
+  const rotors = [document.getElementById('bombeR1').value,
+                  document.getElementById('bombeR2').value,
+                  document.getElementById('bombeR3').value];
+  const pos    = [ALPHA.indexOf(config[0]), ALPHA.indexOf(config[1]), ALPHA.indexOf(config[2])];
+  const m      = new EnigmaMachine(rotors, 'B', pos);
+  const out    = m.encodeMessage(ct);
+
+  const el = document.getElementById('bdOutput');
+  el.innerHTML = '';
+  out.split('').forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.className = 'flip-char';
+    s.style.animationDelay = (i*0.04)+'s';
+    s.textContent = ch;
+    el.appendChild(s);
+  });
+});
+</script>
+
+<script src="js/ui/common.js"></script>
+</body>
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Операция ВИГЕНЕР — Секретный Архив</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/design.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">← АРХИВ</a>
+  <ul class="nav-links">
+    <li><a href="vigenere.html" class="active">ОП. ВИГЕНЕР</a></li>
+    <li><a href="enigma.html">ОП. ЭНИГМА</a></li>
+    <li><a href="venona.html">ОП. ВЕНОНА</a></li>
+  </ul>
+  <div class="nav-clearance">ДОПУСК <span class="level" id="clearanceLevel">0</span>/3</div>
+  <button class="nav-burger" id="navBurger" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page">
+  <!-- Hero -->
+  <section class="section-hero" data-op="01">
+    <div class="container">
+      <div class="op-tag">ОПЕРАЦИЯ 01 · 1914–1918 · ПЕРВАЯ МИРОВАЯ ВОЙНА</div>
+      <h1>Шифр Виженера</h1>
+      <p class="mt-2" style="max-width:600px; color:var(--text-dim)">
+        Три столетия этот шифр называли <em style="color:var(--amber)">«нерасшифруемым»</em>.
+        В 1917 году немецкие депеши, зашифрованные модификацией Виженера,
+        перехватывались союзниками — и взламывались за часы.
+      </p>
+
+      <!-- Steps nav -->
+      <div class="steps mt-3" id="stepsNav">
+        <div class="step-dot active" data-step="0" title="Понять шифр">1</div>
+        <div class="step-dot" data-step="1" title="Зашифровать">2</div>
+        <div class="step-dot" data-step="2" title="Найти повторы">3</div>
+        <div class="step-dot" data-step="3" title="Частотный анализ">4</div>
+        <div class="step-dot" data-step="4" title="Взломать!">5</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-content">
+    <div class="container">
+
+      <!-- ═══ STEP 0: Explanation ═══ -->
+      <div class="step-panel" id="step0">
+        <h2>Как работает шифр Виженера?</h2>
+        <p class="mt-2" style="color:var(--text-dim)">
+          Виженер — это не один шифр, а <strong style="color:var(--white)">несколько сдвигов Цезаря сразу</strong>,
+          применяемых поочерёдно по буквам ключевого слова.
+        </p>
+
+        <div class="callout mt-2">
+          <strong class="amber">Пример:</strong> ключ <span class="green">KEY</span>, текст <span class="amber">ATTACKATDAWN</span><br>
+          K=10, E=4, Y=24 — каждая буква текста сдвигается на соответствующую цифру ключа, циклически.
+        </div>
+
+        <!-- Visual tableau -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Интерактивная таблица Виженера</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Открытый текст</label>
+                <input type="text" id="tableauPlain" placeholder="HELLO" maxlength="20" value="HELLO">
+              </div>
+              <div>
+                <label class="label">Ключ</label>
+                <input type="text" id="tableauKey" placeholder="KEY" maxlength="20" value="KEY">
+              </div>
+            </div>
+
+            <div id="tableauGrid" class="tableau-grid"></div>
+
+            <div class="mt-2">
+              <label class="label">Результат</label>
+              <div class="cipher-output" id="tableauOutput"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-lg" onclick="goStep(1)">
+            К ШИФРОВАНИЮ &nbsp;<span style="opacity:.7">›</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 1: Encrypt ═══ -->
+      <div class="step-panel" id="step1" style="display:none">
+        <h2>Зашифруй своё сообщение</h2>
+        <p class="mt-2" style="color:var(--text-dim)">
+          Введи любой текст (латиница) и ключевое слово. Посмотри, как каждая буква
+          смещается по таблице Виженера.
+        </p>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Шифратор</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Открытый текст (латиница)</label>
+                <input type="text" id="encPlain" placeholder="ATTACKATDAWN" value="ATTACKATDAWN">
+              </div>
+              <div>
+                <label class="label">Ключевое слово</label>
+                <input type="text" id="encKey" placeholder="LEMON" value="LEMON">
+              </div>
+            </div>
+
+            <button class="btn btn-primary" id="encBtn">⟳ ЗАШИФРОВАТЬ</button>
+
+            <div id="encStepsWrap" class="mt-3" style="display:none">
+              <label class="label">Пошаговый разбор</label>
+              <div id="encStepsGrid" class="steps-grid"></div>
+              <div class="mt-2">
+                <label class="label">Шифртекст</label>
+                <div class="cipher-output" id="encOutput"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decrypt panel -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Расшифровщик (знаешь ключ)</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Шифртекст</label>
+                <input type="text" id="decCipher" placeholder="LXFOPVEFRNHR">
+              </div>
+              <div>
+                <label class="label">Ключ</label>
+                <input type="text" id="decKey" placeholder="LEMON" value="LEMON">
+              </div>
+            </div>
+            <button class="btn btn-green" id="decBtn">▷ РАСШИФРОВАТЬ</button>
+            <div class="mt-2">
+              <div class="cipher-output" id="decOutput" style="color:var(--amber)"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-lg" onclick="goStep(2)">
+            К АНАЛИЗУ &nbsp;<span style="opacity:.7">›</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 2: Kasiski ═══ -->
+      <div class="step-panel" id="step2" style="display:none">
+        <h2>Метод Казиски: ищем повторы</h2>
+        <div class="callout mt-2">
+          <strong class="amber">Идея:</strong> если ключевое слово короткое, то одинаковые фрагменты
+          открытого текста, попавшие под одинаковую часть ключа, дадут <em>одинаковые</em> шифртексты.
+          Расстояние между ними кратно длине ключа!
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header">
+            <h3>Перехваченная депеша (1917)</h3>
+            <span class="stamp" style="transform:rotate(-2deg); font-size:0.65rem">ПЕРЕХВАЧЕНО</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:1rem">
+              Нажимай на повторяющиеся трёхбуквенные группы, чтобы их отметить.
+              Система посчитает расстояния и поможет найти длину ключа.
+            </p>
+
+            <label class="label">Шифртекст (можно вставить свой)</label>
+            <textarea id="kasiskiInput" style="height:100px; margin-bottom:1rem; font-size:0.85rem; letter-spacing:0.08em">CHREEVOAHMAERATBIAXXWTNXBEEOPHBSBQMQEQERBWRVXUOAKXAOSXXWEAHBWGJMMQMNKGRFVGXWTRZXWIAKLXFPSKAUTEMNDCMGTSXMXBTYXMTSX</textarea>
+
+            <button class="btn btn-primary" id="kasiskiAnalyzeBtn">⌕ НАЙТИ ПОВТОРЫ</button>
+
+            <div id="kasiskiResult" class="mt-3" style="display:none">
+              <label class="label">Размеченный текст (нажми на группу для фокуса)</label>
+              <div id="kasiskiText" class="cipher-output" style="line-height:2; cursor:pointer"></div>
+
+              <div class="mt-2" id="kasiskiDistances"></div>
+
+              <div class="mt-2" id="kasiskiGcd" style="display:none">
+                <div class="callout callout-green">
+                  <strong class="green">НОД расстояний:</strong> <span id="gcdValue" class="green" style="font-size:1.2rem"></span>
+                  — это вероятная длина ключа!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-green btn-lg" id="toFreqBtn" style="display:none" onclick="goStep(3)">
+            К ЧАСТОТНОМУ АНАЛИЗУ &nbsp;<span style="opacity:.7">›</span>
+          </button>
+          <button class="btn btn-ghost" onclick="goStep(3)" style="margin-left:0.5rem">Пропустить</button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 3: Frequency Analysis ═══ -->
+      <div class="step-panel" id="step3" style="display:none">
+        <h2>Частотный анализ колонок</h2>
+        <div class="callout mt-2">
+          Зная длину ключа <strong class="amber" id="freqKeylenHint">N</strong>,
+          разбиваем шифртекст на <strong class="amber" id="freqKeylenHint2">N</strong> колонок.
+          Каждая колонка — обычный шифр Цезаря. В английском тексте буква <strong class="green">E</strong>
+          встречается чаще всего (~12.7%). Находим самую частую букву в колонке — это зашифрованная E!
+        </div>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Разбивка по колонкам</h3></div>
+          <div class="panel-body">
+            <div style="display:flex; gap:1rem; align-items:flex-end; margin-bottom:1rem; flex-wrap:wrap">
+              <div>
+                <label class="label">Длина ключа</label>
+                <input type="text" id="freqKeylen" value="3" style="width:60px">
+              </div>
+              <button class="btn btn-green" id="freqSplitBtn">↓ РАЗБИТЬ</button>
+            </div>
+
+            <div id="freqColumns"></div>
+
+            <div id="freqKeyRecover" class="mt-3" style="display:none">
+              <div class="callout callout-green">
+                <strong class="green">Восстановленный ключ:</strong>
+                <span class="green" id="recoveredKey" style="font-size:1.3rem; letter-spacing:0.2em; margin-left:0.5rem"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 text-center">
+          <button class="btn btn-primary btn-lg" onclick="goStep(4)">
+            ✦ ВЗЛОМАТЬ И РАСШИФРОВАТЬ
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 4: Reveal ═══ -->
+      <div class="step-panel" id="step4" style="display:none">
+        <h2>Взлом завершён!</h2>
+
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Расшифровка депеши</h3></div>
+          <div class="panel-body">
+            <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
+              <div>
+                <label class="label">Шифртекст</label>
+                <textarea id="revealCipher" style="height:80px"></textarea>
+              </div>
+              <div>
+                <label class="label">Найденный ключ</label>
+                <input type="text" id="revealKey" placeholder="...">
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg" id="revealBtn">✦ РАСШИФРОВАТЬ!</button>
+
+            <div id="revealWrap" class="mt-3" style="display:none">
+              <label class="label">Открытый текст</label>
+              <div id="revealOutput" class="cipher-output" style="color:var(--amber); font-size:1rem; line-height:2; min-height:60px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-green mt-3">
+          <strong class="green">✓ Операция выполнена.</strong> Шифр Виженера взломан методом Казиски
+          и частотного анализа — именно так это делали криптоаналитики Первой мировой.
+        </div>
+
+        <div class="mt-3 text-center">
+          <a href="enigma.html" class="btn btn-green btn-lg">
+            СЛЕДУЮЩАЯ: ОП. ЭНИГМА &nbsp;<span style="opacity:.7">›</span>
+          </a>
+          <a href="index.html" class="btn btn-ghost" style="margin-left:0.75rem">← В АРХИВ</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Clearance bar -->
+<div class="clearance-bar"><div class="clearance-fill" id="clearanceFill" style="width:0%"></div></div>
+
+<style>
+/* ── Tableau grid – inner cell parts (layout only, colors from design.css) ── */
+.tc-plain {
+  font-size: 1rem;
+  color: var(--white);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 3px;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-title);
+}
+.tc-key   { font-size: 0.72rem; color: var(--green); margin: 3px 0; font-family: var(--btn-font); font-weight: 600; }
+.tc-shift { font-size: 0.62rem; color: var(--text-dim); }
+.tc-cipher { font-size: 1rem; color: var(--amber); font-weight: bold; font-family: var(--font-title); }
+.tc-arrow  { font-size: 0.55rem; color: var(--text-dim); }
+
+/* ── Encrypt steps display ── */
+.sg-plain { font-size: 0.88rem; color: var(--white); font-family: var(--font-title); }
+.sg-key   { font-size: 0.62rem; color: var(--green); font-family: var(--btn-font); font-weight: 600; }
+.sg-enc   { font-size: 0.88rem; color: var(--amber); font-weight: bold; font-family: var(--font-title); }
+
+/* ── Frequency bars ── */
+.freq-col { margin-bottom: 1.75rem; }
+.freq-col h4 {
+  font-family: var(--btn-font);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.freq-col h4::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 1px;
+  background: var(--amber);
+  opacity: 0.5;
+}
+
+.freq-bars-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 80px;
+  background: rgba(0,5,0,0.6);
+  border: 1px solid rgba(0,255,65,0.06);
+  padding: 4px 4px 0;
+}
+.freq-bar-item {
+  flex: 1;
+  background: rgba(245,166,35,0.25);
+  position: relative;
+  transition: background 0.2s;
+  min-height: 2px;
+}
+.freq-bar-item.top { background: var(--amber); box-shadow: 0 0 6px rgba(245,166,35,0.4); }
+.freq-bar-item:hover { background: rgba(255,255,255,0.5); }
+.freq-bar-item .fbi-letter {
+  position: absolute;
+  bottom: -1.4em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  font-family: var(--btn-font);
+}
+.freq-bar-item.top .fbi-letter { color: var(--amber); }
+.freq-labels-row { height: 1.4em; }
+.freq-guess {
+  margin-top: 0.85rem;
+  font-size: 0.83rem;
+  font-family: var(--btn-font);
+  letter-spacing: 0.04em;
+}
+
+/* ── Trigram highlights ── */
+.tri-a { background: rgba(245,166,35,0.25); color: var(--amber); }
+.tri-b { background: rgba(0,255,65,0.18);  color: var(--green); }
+.tri-c { background: rgba(120,120,255,0.2); color: #aaaaff; }
+.tri-d { background: rgba(255,100,100,0.2); color: #ff9090; }
+.tri-e { background: rgba(255,200,0,0.18);  color: #ffd040; }
+</style>
+
+<script type="module">
+import {
+  ALPHA, normalize, encrypt, decrypt, encryptSteps,
+  letterFrequency, kasiskiTrigrams, gcdList, splitColumns, guessShift
+} from './js/ciphers/vigenere.js';
+
+// ── Step navigation ──
+let currentStep = 0;
+let foundKeyLen = 3;
+let foundKey    = '';
+let kasiskiCiphertext = '';
+
+window.goStep = goStep;
+function goStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('step' + n).style.display = 'block';
+  document.getElementById('step' + n).classList.add('fade-up');
+  currentStep = n;
+  document.querySelectorAll('.step-dot').forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    if (i < n) d.classList.add('done');
+    if (i === n) d.classList.add('active');
+  });
+  window.scrollTo({ top: 60, behavior: 'smooth' });
+  if (n === 3) renderFreqColumns();
+  if (n === 4) prefillReveal();
+}
+
+document.querySelectorAll('.step-dot').forEach(d => {
+  d.addEventListener('click', () => goStep(+d.dataset.step));
+});
+
+// ── Clearance ──
+const lvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+document.getElementById('clearanceLevel').textContent = lvl;
+document.getElementById('clearanceFill').style.width = (lvl/3*100)+'%';
+
+// ══════════════════════════════════
+// STEP 0 — Tableau
+// ══════════════════════════════════
+function renderTableau() {
+  const pt  = normalize(document.getElementById('tableauPlain').value || 'HELLO');
+  const key = normalize(document.getElementById('tableauKey').value || 'KEY');
+  if (!pt || !key) return;
+  const steps = encryptSteps(pt, key);
+  const grid  = document.getElementById('tableauGrid');
+  grid.innerHTML = '';
+  steps.forEach(({ plain, key: k, shift, enc }, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'tableau-cell';
+    cell.style.animationDelay = (i * 0.04) + 's';
+    cell.innerHTML = `
+      <div class="tc-plain">${plain}</div>
+      <div class="tc-arrow">↓</div>
+      <div class="tc-key">${k}</div>
+      <div class="tc-shift">+${shift}</div>
+      <div class="tc-arrow">↓</div>
+      <div class="tc-cipher">${enc}</div>
+    `;
+    grid.appendChild(cell);
+  });
+  document.getElementById('tableauOutput').textContent = steps.map(s => s.enc).join('');
+}
+
+document.getElementById('tableauPlain').addEventListener('input', renderTableau);
+document.getElementById('tableauKey').addEventListener('input', renderTableau);
+renderTableau();
+
+// ══════════════════════════════════
+// STEP 1 — Encrypt / Decrypt
+// ══════════════════════════════════
+document.getElementById('encBtn').addEventListener('click', () => {
+  const pt  = document.getElementById('encPlain').value;
+  const key = document.getElementById('encKey').value;
+  if (!pt || !key) return;
+  const steps  = encryptSteps(pt, key);
+  const grid   = document.getElementById('encStepsGrid');
+  grid.innerHTML = '';
+  steps.forEach(({ plain, key: k, enc }, i) => {
+    const c = document.createElement('div');
+    c.className = 'sg-cell';
+    c.style.animationDelay = (i * 0.03) + 's';
+    c.innerHTML = `<span class="sg-plain">${plain}</span><span class="sg-key">${k}</span><span class="sg-enc">${enc}</span>`;
+    grid.appendChild(c);
+  });
+  document.getElementById('encOutput').textContent = steps.map(s => s.enc).join('');
+  document.getElementById('encStepsWrap').style.display = 'block';
+
+  // Pre-fill decryption field
+  document.getElementById('decCipher').value = steps.map(s => s.enc).join('');
+  document.getElementById('decKey').value = normalize(key);
+});
+
+document.getElementById('decBtn').addEventListener('click', () => {
+  const ct  = document.getElementById('decCipher').value;
+  const key = document.getElementById('decKey').value;
+  document.getElementById('decOutput').textContent = decrypt(ct, key);
+});
+
+// ══════════════════════════════════
+// STEP 2 — Kasiski
+// ══════════════════════════════════
+document.getElementById('kasiskiAnalyzeBtn').addEventListener('click', () => {
+  kasiskiCiphertext = document.getElementById('kasiskiInput').value;
+  const trigrams = kasiskiTrigrams(kasiskiCiphertext);
+  const top = trigrams.slice(0, 5);
+  const colors = ['tri-a','tri-b','tri-c','tri-d','tri-e'];
+
+  // Build annotated text
+  const text = normalize(kasiskiCiphertext);
+  const charClasses = new Array(text.length).fill('');
+
+  top.forEach((t, ci) => {
+    t.positions.forEach(pos => {
+      for (let k = 0; k < 3; k++) {
+        if (!charClasses[pos+k]) charClasses[pos+k] = colors[ci];
+      }
+    });
+  });
+
+  const container = document.getElementById('kasiskiText');
+  container.innerHTML = '';
+  text.split('').forEach((ch, i) => {
+    const span = document.createElement('span');
+    if (charClasses[i]) span.className = charClasses[i];
+    span.textContent = ch;
+    container.appendChild(span);
+  });
+
+  // Distances
+  const distContainer = document.getElementById('kasiskiDistances');
+  distContainer.innerHTML = '';
+  if (top.length === 0) {
+    distContainer.innerHTML = '<p class="dim">Повторяющихся триграмм не найдено. Попробуй более длинный текст.</p>';
+    document.getElementById('kasiskiResult').style.display = 'block';
+    return;
+  }
+
+  const allDists = [];
+  top.forEach((t, ci) => {
+    const row = document.createElement('div');
+    row.style.cssText = 'margin-bottom:0.5rem; font-size:0.85rem';
+    const dists = t.distances;
+    allDists.push(...dists);
+    row.innerHTML = `<span class="${colors[ci]}" style="padding:1px 4px">${t.tri}</span>
+      встречается ${t.positions.length}×, позиции: [${t.positions.join(', ')}],
+      расстояния: <span class="amber">${dists.join(', ')}</span>`;
+    distContainer.appendChild(row);
+  });
+
+  // GCD
+  if (allDists.length >= 2) {
+    const g = gcdList(allDists.filter(d => d > 0));
+    foundKeyLen = g;
+    document.getElementById('gcdValue').textContent = g;
+    document.getElementById('kasiskiGcd').style.display = 'block';
+    document.getElementById('freqKeylen').value = g;
+    document.getElementById('freqKeylenHint').textContent  = g;
+    document.getElementById('freqKeylenHint2').textContent = g;
+    document.getElementById('toFreqBtn').style.display = 'inline-flex';
+  }
+
+  document.getElementById('kasiskiResult').style.display = 'block';
+});
+
+// ══════════════════════════════════
+// STEP 3 — Frequency
+// ══════════════════════════════════
+function renderFreqColumns() {
+  const cipher = kasiskiCiphertext || document.getElementById('kasiskiInput').value;
+  const kl = parseInt(document.getElementById('freqKeylen').value) || 3;
+  const cols = splitColumns(cipher, kl);
+  const container = document.getElementById('freqColumns');
+  container.innerHTML = '';
+
+  const keyChars = [];
+
+  cols.forEach((col, ci) => {
+    const freq = letterFrequency(col);
+    const maxPct = Math.max(...freq.map(f => f.pct), 0.01);
+    const topLetter = freq.reduce((a, b) => a.count > b.count ? a : b);
+    const guessedShift = (ALPHA.indexOf(topLetter.letter) - ALPHA.indexOf('E') + 26) % 26;
+    const guessedKeyChar = ALPHA[guessedShift];
+    keyChars.push(guessedKeyChar);
+
+    const div = document.createElement('div');
+    div.className = 'freq-col';
+    div.innerHTML = `<h4>Колонка ${ci+1} (каждая ${kl}-я буква, начиная с ${ci+1})</h4>`;
+
+    const barsWrap = document.createElement('div');
+    barsWrap.className = 'freq-bars-wrap';
+
+    freq.forEach(({ letter, pct }) => {
+      const bar = document.createElement('div');
+      bar.className = 'freq-bar-item' + (letter === topLetter.letter ? ' top' : '');
+      bar.style.height = Math.round(pct / maxPct * 100) + '%';
+      bar.innerHTML = `<span class="fbi-letter">${letter}</span>`;
+      bar.title = `${letter}: ${(pct*100).toFixed(1)}%`;
+      barsWrap.appendChild(bar);
+    });
+
+    div.appendChild(barsWrap);
+    const labRow = document.createElement('div');
+    labRow.className = 'freq-labels-row';
+    div.appendChild(labRow);
+
+    const guess = document.createElement('div');
+    guess.className = 'freq-guess';
+    guess.innerHTML = `Самая частая: <span class="amber">${topLetter.letter}</span>
+      → предположим E → сдвиг <span class="amber">${guessedShift}</span>
+      → буква ключа: <strong class="green" style="font-size:1.1rem">${guessedKeyChar}</strong>`;
+    div.appendChild(guess);
+    container.appendChild(div);
+  });
+
+  foundKey = keyChars.join('');
+  document.getElementById('recoveredKey').textContent = foundKey;
+  document.getElementById('freqKeyRecover').style.display = 'block';
+}
+
+document.getElementById('freqSplitBtn').addEventListener('click', renderFreqColumns);
+
+// ══════════════════════════════════
+// STEP 4 — Reveal
+// ══════════════════════════════════
+function prefillReveal() {
+  const cipher = kasiskiCiphertext || document.getElementById('kasiskiInput').value;
+  document.getElementById('revealCipher').value = normalize(cipher);
+  document.getElementById('revealKey').value = foundKey || '';
+}
+
+document.getElementById('revealBtn').addEventListener('click', () => {
+  const ct  = document.getElementById('revealCipher').value;
+  const key = document.getElementById('revealKey').value;
+  const pt  = decrypt(ct, key);
+  const out = document.getElementById('revealOutput');
+  out.innerHTML = '';
+  pt.split('').forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'flip-char';
+    span.style.animationDelay = (i * 0.025) + 's';
+    span.textContent = ch;
+    out.appendChild(span);
+  });
+  document.getElementById('revealWrap').style.display = 'block';
+  localStorage.setItem('done_vigenere', '1');
+  document.getElementById('clearanceLevel').textContent =
+    ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+});
+</script>
+
+<script src="js/ui/common.js"></script>
+</body>
+</html>
