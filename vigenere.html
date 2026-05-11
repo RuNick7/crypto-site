@@ -272,15 +272,67 @@
         </div>
 
         <div class="callout callout-green mt-3">
-          <strong class="green">✓ Операция выполнена.</strong> Шифр Виженера взломан методом Казиски
-          и частотного анализа — именно так это делали криптоаналитики Первой мировой.
+          <strong class="green">✓ Операция выполнена.</strong> Шифр, 300 лет считавшийся нерасшифруемым, взломан.
         </div>
 
-        <div class="mt-3 text-center">
+        <!-- ── Итог ── -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Итог операции · Что ты только что сделал</h3></div>
+          <div class="panel-body">
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem">
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">300</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЛЕТ</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">шифр считался нерасшифруемым — с 1553 по 1863</div>
+              </div>
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">2</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">МЕТОДА</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">Казиски + частотный анализ — твои инструменты взлома</div>
+              </div>
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">~6</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЧАСОВ</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">столько уходило на взлом реальной депеши в 1917</div>
+              </div>
+            </div>
+
+            <p style="font-size:0.9rem;color:var(--text-dim);line-height:1.8">
+              Ты применил те же два шага, что и криптоаналитики союзников в Первой мировой:
+              нашёл длину ключа через повторяющиеся триграммы, затем свёл каждую колонку
+              к простому шифру Цезаря и вычислил сдвиг по частоте букв.
+            </p>
+
+            <div class="callout mt-2">
+              <strong class="amber">Фундаментальная слабость Vigenère:</strong> шифр <em>периодичен</em>.
+              Один ключ используется снова и снова. Как только найдена его длина —
+              задача распадается на несколько независимых шифров Цезаря, каждый из которых
+              тривиально взламывается за секунды.
+            </div>
+
+            <div class="callout callout-red mt-2">
+              <strong class="red">Историческая цена взлома:</strong> осознав уязвимость ручных шифров,
+              Германия вложила ресурсы в <em>электромеханическое</em> шифрование.
+              Итог — машина <strong style="color:var(--white)">Enigma</strong>, 158 квинтиллионов
+              конфигураций и следующая операция.
+            </div>
+
+            <div class="callout callout-green mt-2">
+              <strong class="green">Ключевой урок:</strong> безопасность шифра определяется
+              не его сложностью на вид, а математической стойкостью к атаке.
+              «Выглядит сложно» — не аргумент. Именно это открытие превратило
+              криптографию из ремесла в науку.
+            </div>
+
+          </div>
+        </div>
+
+        <div class="mt-3" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
           <a href="enigma.html" class="btn btn-green btn-lg">
             СЛЕДУЮЩАЯ: ОП. ENIGMA &nbsp;<span style="opacity:.7">›</span>
           </a>
-          <a href="index.html" class="btn btn-ghost" style="margin-left:0.75rem">← В АРХИВ</a>
+          <a href="index.html" class="btn btn-ghost">← В АРХИВ</a>
         </div>
       </div>
 

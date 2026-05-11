@@ -382,15 +382,68 @@
         </div>
 
         <div class="callout callout-green mt-3" id="enigmaDoneNote" style="display:none">
-          <strong class="green">✓ Операция выполнена.</strong> Именно так работала Бомба в Блетчли Парке —
-          ежедневно обрабатывая тысячи перехваченных немецких сообщений.
+          <strong class="green">✓ Операция выполнена.</strong> Бомба нашла конфигурацию. Сообщение расшифровано.
         </div>
 
-        <div class="mt-3 text-center">
+        <!-- ── Итог ── -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Итог операции · Цена взлома Enigma</h3></div>
+          <div class="panel-body">
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem">
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">210</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">МАШИН</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">Бомб Тьюринга было построено к 1945 году</div>
+              </div>
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">84К</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">В МЕСЯЦ</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">сообщений расшифровывал Блетчли Парк на пике</div>
+              </div>
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">2–4</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ГОДА</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">на столько взлом Enigma сократил войну по оценке историков</div>
+              </div>
+            </div>
+
+            <p style="font-size:0.9rem;color:var(--text-dim);line-height:1.8">
+              Ты только что воспроизвёл логику, которая каждое утро запускалась в Блетчли Парке.
+              Бомба не угадывала ключ — она <em>исключала</em> противоречия. Свойство Enigma
+              «буква никогда не шифруется сама в себя» превратилось из особенности конструкции
+              в смертельную уязвимость.
+            </p>
+
+            <div class="callout mt-2">
+              <strong class="amber">Парадокс безопасности Enigma:</strong> немецкие инженеры
+              добавили рефлектор ради удобства операторов — симметричное шифрование (один код
+              для шифровки и расшифровки). Но именно рефлектор гарантировал, что A ≠ A.
+              Удобство оказалось смертельным для криптостойкости.
+            </div>
+
+            <div class="callout callout-red mt-2">
+              <strong class="red">Цена секретности:</strong> Черчилль засекретил ULTRA до 1974 года.
+              Некоторые послевоенные решения выглядели странно — союзники позволяли немцам
+              бомбить известные им цели, лишь бы не раскрыть источник. Тьюринг, спасший
+              миллионы жизней, в 1952 году был осуждён и подвергнут химической кастрации.
+              Помилован посмертно — в 2013-м.
+            </div>
+
+            <div class="callout callout-green mt-2">
+              <strong class="green">Ключевой урок:</strong> любое ограничение в конструкции шифра —
+              потенциальная уязвимость. Тьюринг не взламывал математику Enigma.
+              Он нашёл физическое ограничение машины и использовал его против неё.
+            </div>
+
+          </div>
+        </div>
+
+        <div class="mt-3" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
           <a href="venona.html" class="btn btn-green btn-lg">
             СЛЕДУЮЩАЯ: ОП. VENONA &nbsp;<span style="opacity:.7">›</span>
           </a>
-          <a href="index.html" class="btn btn-ghost" style="margin-left:0.75rem">← В АРХИВ</a>
+          <a href="index.html" class="btn btn-ghost">← В АРХИВ</a>
         </div>
       </div>
 

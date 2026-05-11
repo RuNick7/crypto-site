@@ -360,20 +360,67 @@
         </div>
 
         <div class="callout callout-green mt-3">
-          <strong class="green">✓ Операция ВЕНОНА завершена.</strong><br>
-          Именно так аналитики АНБ работали с советскими телеграммами 37 лет.
-          В итоге они идентифицировали более 300 советских агентов в США,
-          включая Юлиуса и Этель Розенберг.
+          <strong class="green">✓ Операция VENONA завершена.</strong> Теоретически нерасшифруемый шифр взломан — из-за человеческой ошибки.
         </div>
 
-        <div class="callout callout-red mt-2">
-          <strong class="red">Главный урок криптографии:</strong>
-          Даже математически совершенный шифр бесполезен, если нарушены правила его использования.
-          Правило № 1 ОТП — <strong>никогда не использовать ключ дважды.</strong>
+        <!-- ── Итог ── -->
+        <div class="panel mt-3">
+          <div class="panel-header"><h3>Итог операции · Что сломало «нерасшифруемый» шифр</h3></div>
+          <div class="panel-body">
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem">
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">37</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЛЕТ</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">АНБ читало советский трафик — с 1943 по 1980</div>
+              </div>
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">300+</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">АГЕНТОВ</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">советской разведки идентифицировано в итоге</div>
+              </div>
+              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">1995</div>
+                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ГОД</div>
+                <div style="font-size:0.78rem;color:var(--text-dim)">когда VENONA была рассекречена — через 52 года</div>
+              </div>
+            </div>
+
+            <p style="font-size:0.9rem;color:var(--text-dim);line-height:1.8">
+              Одноразовый блокнот математически доказуемо нерасшифруем — это теорема, доказанная
+              Клодом Шенноном в 1949 году. Советская криптография была <em>теоретически безупречна</em>.
+              Но в 1942–43 году дефицит ключевого материала вынудил НКВД переиспользовать блокноты.
+              Одна операционная ошибка сломала то, что не могла сломать математика.
+            </p>
+
+            <div class="callout mt-2">
+              <strong class="amber">Почему это работало:</strong> если два сообщения зашифрованы
+              одним ключом (C₁ = P₁⊕K, C₂ = P₂⊕K), то C₁⊕C₂ = P₁⊕P₂ — ключ исчезает.
+              P₁⊕P₂ уже не случаен: это XOR двух осмысленных текстов. Статистические паттерны
+              языка возвращаются — и именно их использовал криб-драггинг.
+            </div>
+
+            <div class="callout callout-red mt-2">
+              <strong class="red">Атомная бомба и VENONA:</strong> агенты, раскрытые через VENONA,
+              передали СССР чертежи плутониевой бомбы. Советский Союз испытал её в 1949 году —
+              на 3–5 лет раньше западных прогнозов. Прямое следствие — гонка вооружений,
+              корейская война, Карибский кризис.
+            </div>
+
+            <div class="callout callout-green mt-2">
+              <strong class="green">Ключевой урок — OPSEC важнее криптографии:</strong>
+              математически совершенный инструмент не защищает от человеческих ошибок.
+              Правило № 1 OTP — никогда не использовать ключ дважды — нарушить нельзя ни при каких
+              обстоятельствах. Это урок не только для криптографов 1943 года, но и для любой
+              системы безопасности: самое слабое звено — не алгоритм, а человек.
+            </div>
+
+          </div>
         </div>
 
-        <div class="mt-3 text-center">
+        <div class="mt-3" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
           <a href="index.html" class="btn btn-green">ВЕРНУТЬСЯ В АРХИВ ▶</a>
+          <span style="font-size:0.75rem;color:var(--text-dim);letter-spacing:0.1em">ВСЕ ТРИ ОПЕРАЦИИ ПРОЙДЕНЫ</span>
         </div>
       </div>
 
