@@ -152,13 +152,12 @@ function bombeSearch(ciphertext, crib, rotorNames = ['I','II','III'],
       [r, m, l], ringSettings, plugboardPairs
     );
 
-    // Test: encode crib starting at position 0 (crib dragging assumed done)
+    // Test: decode ciphertext and check if it matches the crib
+    // (Enigma is symmetric: encode(ct) = pt, so decode(ct[i]) should equal cb[i])
     let valid = true;
-    const savedPos = machine.getPositions();
-
     for (let i = 0; i < cb.length && i < ct.length; i++) {
       const result = machine.encodeLetter(ct[i]);
-      if (!result || result.output === ct[i]) { // Enigma never encrypts letter to itself
+      if (!result || result.output !== cb[i]) {
         valid = false;
         break;
       }
