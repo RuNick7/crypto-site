@@ -68,7 +68,12 @@
 
           <div>
             <!-- SVG schematic of Enigma signal path -->
-            <svg viewBox="0 0 320 300" style="width:100%; max-width:320px; display:block; margin:0 auto" id="enigmaSchematic">
+            <div style="text-align:center; margin-bottom:0.6rem">
+              <button id="signalBtn" class="btn-signal">
+                <span class="signal-icon">⚡</span> ПРОСЛЕДИТЬ СИГНАЛ
+              </button>
+            </div>
+            <svg viewBox="0 0 320 300" style="width:100%; max-width:320px; display:block; margin:0 auto; cursor:pointer" id="enigmaSchematic">
               <!-- Background -->
               <rect width="320" height="300" fill="#0c0c13" rx="6"/>
 
@@ -259,10 +264,17 @@
         <h2>Метод «криба» — Crib Dragging</h2>
         <div class="callout mt-2">
           <strong class="amber">Как это работает?</strong><br>
-          Немецкие операторы часто заканчивали сообщения стандартными фразами.
+          Немецкие операторы каждое утро отправляли сводку погоды, начинавшуюся с
+          <strong class="green">WETTER</strong> (погода).
           Тьюринг использовал это: берём предполагаемую фразу (криб) и «перетаскиваем»
           её по шифртексту. Где буква криба совпадает с буквой шифртекста — эта позиция
           <strong class="red">невозможна</strong> (Энигма не шифрует букву в себя!).
+        </div>
+
+        <div class="callout callout-red mt-2" style="font-size:0.82rem">
+          <strong class="red">Перехвачено 06:00, 15 ноября 1942 г. — Криптоотдел Блетчли Парк</strong><br>
+          Немецкий военно-морской флот. Ежедневная сводка погоды для Северного моря.
+          Известно: сообщение начинается с <span class="green" style="font-family:var(--font-title); font-size:0.95rem">WETTER</span>.
         </div>
 
         <div class="panel mt-3">
@@ -274,11 +286,11 @@
             <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
               <div>
                 <label class="label">Шифртекст</label>
-                <input type="text" id="cribCipher" value="QMJIDOMZWZJFJR" style="text-transform:uppercase; letter-spacing:0.1em">
+                <input type="text" id="cribCipher" value="BFEUPHOKXZLSBEFSLEWXHRZATXTLKUAUUMFLWMURBBDXLHM" style="text-transform:uppercase; letter-spacing:0.1em">
               </div>
               <div>
                 <label class="label">Криб (предполагаемый открытый текст)</label>
-                <input type="text" id="cribText" value="WEATHER" style="text-transform:uppercase; letter-spacing:0.1em">
+                <input type="text" id="cribText" value="WETTER" style="text-transform:uppercase; letter-spacing:0.1em">
               </div>
             </div>
             <button class="btn btn-primary" id="cribAnalyzeBtn">⌕ ПРИМЕНИТЬ КРИБ-ДРАГГИНГ</button>
@@ -313,11 +325,11 @@
             <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
               <div>
                 <label class="label">Шифртекст для атаки</label>
-                <input type="text" id="bombeCtInput" value="QMJIDOMZWZJFJR" style="text-transform:uppercase">
+                <input type="text" id="bombeCtInput" value="BFEUPHOKXZLSBEFSLEWXHRZATXTLKUAUUMFLWMURBBDXLHM" style="text-transform:uppercase">
               </div>
               <div>
                 <label class="label">Криб (известный фрагмент)</label>
-                <input type="text" id="bombeCribInput" value="WEATHER" style="text-transform:uppercase">
+                <input type="text" id="bombeCribInput" value="WETTER" style="text-transform:uppercase">
               </div>
             </div>
             <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem">
@@ -377,6 +389,34 @@
             <button class="btn btn-green" id="bdDecryptBtn">▷ РАСШИФРОВАТЬ С НАЙДЕННЫМ КЛЮЧОМ</button>
             <div class="mt-2">
               <div class="cipher-output" id="bdOutput" style="color:var(--amber)"></div>
+            </div>
+
+            <!-- German translation panel -->
+            <div id="germanTranslation" style="display:none" class="mt-3">
+              <div class="callout callout-green" style="margin-bottom:0.75rem">
+                <strong class="green">✓ Сводка погоды немецкого флота расшифрована!</strong>
+              </div>
+              <div style="background:rgba(0,5,0,0.6); border:1px solid rgba(0,255,65,0.15); border-left:3px solid var(--green); border-radius:var(--radius); padding:1rem 1.25rem">
+                <div style="font-size:0.68rem; color:var(--text-dim); letter-spacing:0.18em; margin-bottom:0.5rem">РАСШИФРОВАНО · 06:00 · 15.11.1942 · БЛЕТЧЛИ ПАРК</div>
+                <div style="font-size:1.05rem; color:var(--white); letter-spacing:0.12em; font-family:var(--font-title); line-height:1.9; margin-bottom:1rem">
+                  <span style="color:var(--amber)">WETTER</span> <span style="color:var(--green)">BERICHT</span> <span style="color:var(--amber)">NORDSEE</span> <span style="color:var(--green)">GEBIET</span> <span style="color:var(--amber)">BEWOELKT</span> <span style="color:var(--green)">LEICHTES</span> <span style="color:var(--amber)">WINDE</span>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:0.4rem 1rem; font-size:0.8rem">
+                  <div><span class="amber">WETTER</span> <span style="color:var(--text-dim)">— погода</span></div>
+                  <div><span class="amber">BERICHT</span> <span style="color:var(--text-dim)">— отчёт, сводка</span></div>
+                  <div><span class="amber">NORDSEE</span> <span style="color:var(--text-dim)">— Северное море</span></div>
+                  <div><span class="amber">GEBIET</span> <span style="color:var(--text-dim)">— район, зона</span></div>
+                  <div><span class="amber">BEWOELKT</span> <span style="color:var(--text-dim)">— облачно</span></div>
+                  <div><span class="amber">LEICHTES WINDE</span> <span style="color:var(--text-dim)">— слабый ветер</span></div>
+                </div>
+              </div>
+              <div class="callout mt-2" style="font-size:0.82rem">
+                <strong class="amber">Почему WETTER?</strong>
+                Немецкий флот ежедневно в 06:00 передавал стандартные сводки погоды.
+                Криптоаналитики знали, что сообщение <em>обязательно</em> начинается
+                со слова <strong class="green">WETTER</strong> — это и давало «криб»,
+                с которого начиналась атака бомбы Тьюринга каждое утро.
+              </div>
             </div>
           </div>
         </div>
@@ -455,6 +495,36 @@
 <div class="clearance-bar"><div class="clearance-fill" id="clearanceFill" style="width:0%"></div></div>
 
 <style>
+/* ── Signal button ── */
+.btn-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.4rem;
+  background: rgba(245,166,35,0.08);
+  border: 1px solid var(--amber);
+  border-radius: var(--radius);
+  color: var(--amber);
+  font-family: var(--btn-font);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  animation: signalBtnPulse 2s ease-in-out infinite;
+}
+.btn-signal:hover {
+  background: rgba(245,166,35,0.18);
+  box-shadow: 0 0 18px rgba(245,166,35,0.4);
+  animation: none;
+}
+.btn-signal:active { transform: scale(0.97); }
+.signal-icon { font-size: 1rem; }
+@keyframes signalBtnPulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(245,166,35,0.25); border-color: var(--amber); }
+  50%       { box-shadow: 0 0 22px rgba(245,166,35,0.55), 0 0 40px rgba(245,166,35,0.2); border-color: #ffd080; }
+}
+
 /* ── Rotor display layout ── */
 .rotor-display {
   display: flex;
@@ -581,6 +651,10 @@
 <script type="module">
 import { EnigmaMachine, bombeSearch, cribDrag, ALPHA } from './js/ciphers/enigma.js';
 
+// ── Fixed challenge: German weather report encrypted with III-II-I / B / AAA ──
+const ENIGMA_CIPHER = 'BFEUPHOKXZLSBEFSLEWXHRZATXTLKUAUUMFLWMURBBDXLHM';
+const ENIGMA_PLAIN  = 'WETTERBERICHTNORDSEEGEBIETBEWOELKTLEICHTESWINDE';
+
 // ── Utils ──
 function getPos(id) {
   const v = document.getElementById(id).value.toUpperCase().trim();
@@ -639,6 +713,7 @@ function animateSVGPath() {
   });
 }
 document.getElementById('enigmaSchematic').addEventListener('click', animateSVGPath);
+document.getElementById('signalBtn').addEventListener('click', animateSVGPath);
 setTimeout(animateSVGPath, 1000);
 
 // ══════════════════════════════════
@@ -979,6 +1054,17 @@ document.getElementById('bdDecryptBtn').addEventListener('click', () => {
     s.textContent = ch;
     el.appendChild(s);
   });
+
+  // Show German translation if this is the challenge message
+  const translation = document.getElementById('germanTranslation');
+  if (out.startsWith('WETTER')) {
+    setTimeout(() => {
+      translation.style.display = 'block';
+      translation.classList.add('fade-up');
+    }, out.length * 40 + 200);
+  } else {
+    translation.style.display = 'none';
+  }
 });
 </script>
 
