@@ -381,10 +381,20 @@
       item.classList.add('active');
     });
     item.addEventListener('mousemove', e => {
-      const r = document.body.getBoundingClientRect();
-      let x = e.clientX + 14;
-      let y = e.clientY + 14;
-      if(x + 250 > window.innerWidth) x = e.clientX - 260;
+      const pad = 12;
+      const pw  = popup.offsetWidth  || 260;
+      const ph  = popup.offsetHeight || 80;
+      const vw  = window.innerWidth;
+      const vh  = window.innerHeight;
+
+      let x = e.clientX + 16;
+      let y = e.clientY + 16;
+
+      if (x + pw + pad > vw) x = e.clientX - pw - 10;
+      if (x < pad)           x = pad;
+      if (y + ph + pad > vh) y = e.clientY - ph - 10;
+      if (y < pad)           y = pad;
+
       popup.style.left = x + 'px';
       popup.style.top  = y + 'px';
     });
