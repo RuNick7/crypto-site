@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Операция ВИГЕНЕР — Секретный Архив</title>
+  <title>Операция VIGENÈRE — Секретный Архив</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/animations.css">
@@ -14,8 +14,8 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">← АРХИВ</a>
   <ul class="nav-links">
-    <li><a href="vigenere.html" class="active">ОП. ВИГЕНЕР</a></li>
-    <li><a href="enigma.html">ОП. ЭНИГМА</a></li>
+    <li><a href="vigenere.html" class="active">ОП. VIGENÈRE</a></li>
+    <li><a href="enigma.html">ОП. ENIGMA</a></li>
     <li><a href="venona.html">ОП. ВЕНОНА</a></li>
   </ul>
   <div class="nav-clearance">ДОПУСК <span class="level" id="clearanceLevel">0</span>/3</div>
@@ -29,7 +29,7 @@
   <section class="section-hero" data-op="01">
     <div class="container">
       <div class="op-tag">ОПЕРАЦИЯ 01 · 1914–1918 · ПЕРВАЯ МИРОВАЯ ВОЙНА</div>
-      <h1>Шифр Виженера</h1>
+      <h1>Шифр Vigenère</h1>
       <p class="mt-2" style="max-width:600px; color:var(--text-dim)">
         Три столетия этот шифр называли <em style="color:var(--amber)">«нерасшифруемым»</em>.
         В 1917 году немецкие депеши, зашифрованные модификацией Виженера,
@@ -278,7 +278,7 @@
 
         <div class="mt-3 text-center">
           <a href="enigma.html" class="btn btn-green btn-lg">
-            СЛЕДУЮЩАЯ: ОП. ЭНИГМА &nbsp;<span style="opacity:.7">›</span>
+            СЛЕДУЮЩАЯ: ОП. ENIGMA &nbsp;<span style="opacity:.7">›</span>
           </a>
           <a href="index.html" class="btn btn-ghost" style="margin-left:0.75rem">← В АРХИВ</a>
         </div>
@@ -401,7 +401,7 @@ function goStep(n) {
     if (i < n) d.classList.add('done');
     if (i === n) d.classList.add('active');
   });
-  window.scrollTo({ top: 60, behavior: 'smooth' });
+  document.querySelector('.section-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
   if (n === 3) renderFreqColumns();
   if (n === 4) prefillReveal();
 }

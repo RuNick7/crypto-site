@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Операция ВЕНОНА — Секретный Архив</title>
+  <title>Операция VENONA — Секретный Архив</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/animations.css">
@@ -13,9 +13,9 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">← АРХИВ</a>
   <ul class="nav-links">
-    <li><a href="vigenere.html">ОП. ВИГЕНЕР</a></li>
-    <li><a href="enigma.html">ОП. ЭНИГМА</a></li>
-    <li><a href="venona.html" class="active">ОП. ВЕНОНА</a></li>
+    <li><a href="vigenere.html">ОП. VIGENÈRE</a></li>
+    <li><a href="enigma.html">ОП. ENIGMA</a></li>
+    <li><a href="venona.html" class="active">ОП. VENONA</a></li>
   </ul>
   <div class="nav-clearance">ДОПУСК <span class="level" id="clearanceLevel">0</span>/3</div>
   <button class="nav-burger" id="navBurger" aria-label="Меню">
@@ -27,7 +27,7 @@
   <section class="section-hero">
     <div class="container">
       <div class="op-tag">ОПЕРАЦИЯ 03 · 1943–1980 · ХОЛОДНАЯ ВОЙНА</div>
-      <h1>Операция ВЕНОНА</h1>
+      <h1>Операция VENONA</h1>
       <p class="mt-2" style="max-width:620px; color:var(--text-dim)">
         Одноразовый блокнот — единственный доказуемо нерасшифруемый шифр.
         Советская разведка использовала его для связи с агентами.
@@ -486,7 +486,7 @@ function goStep(n) {
     if(i < n) d.classList.add('done');
     if(i === n) d.classList.add('active');
   });
-  window.scrollTo({top:60,behavior:'smooth'});
+  document.querySelector('.section-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
   if(n === 2) renderFreqCompare();
 }
 document.querySelectorAll('.step-dot').forEach(d => {
