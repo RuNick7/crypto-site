@@ -237,7 +237,6 @@
   max-width: 260px;
   z-index: 9000;
   pointer-events: none;
-  animation: popIn 0.2s ease forwards;
   line-height: 1.6;
 }
 

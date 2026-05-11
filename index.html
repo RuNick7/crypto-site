@@ -375,15 +375,18 @@
   document.querySelectorAll('.tl-item').forEach(item => {
     item.addEventListener('mouseenter', e => {
       const info = item.dataset.info;
-      if(!info) return;
+      if (!info) return;
       popup.textContent = info;
+      // Рендерим вне экрана чтобы получить реальные размеры до показа
+      popup.style.top  = '-9999px';
+      popup.style.left = '-9999px';
       popup.style.display = 'block';
       item.classList.add('active');
     });
     item.addEventListener('mousemove', e => {
       const pad = 12;
-      const pw  = popup.offsetWidth  || 260;
-      const ph  = popup.offsetHeight || 80;
+      const pw  = popup.offsetWidth;
+      const ph  = popup.offsetHeight;
       const vw  = window.innerWidth;
       const vh  = window.innerHeight;
 
