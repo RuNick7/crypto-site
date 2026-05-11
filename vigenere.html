@@ -245,95 +245,161 @@
         </div>
       </div>
 
-      <!-- ═══ STEP 4: Reveal ═══ -->
+      <!-- ═══ STEP 4: Challenge ═══ -->
       <div class="step-panel" id="step4" style="display:none">
-        <h2>Взлом завершён!</h2>
+        <h2>Задание: взломай депешу!</h2>
+
+        <div class="callout mt-2">
+          <strong class="amber">Перехваченное сообщение, 1917 г.</strong>
+          Ты освоил оба метода взлома. Теперь применяй их:
+          метод Казиски (шаг 2) → длина ключа, частотный анализ (шаг 3) → буквы ключа.
+          <br><span style="font-size:0.82rem; color:var(--text-dim); margin-top:0.4rem; display:block">
+            Подсказка: ключ состоит из <strong class="green">3 букв</strong>, военная тематика.
+          </span>
+        </div>
 
         <div class="panel mt-3">
-          <div class="panel-header"><h3>Расшифровка депеши</h3></div>
+          <div class="panel-header">
+            <h3>Перехваченная депеша</h3>
+            <span class="stamp" style="transform:rotate(-1deg); font-size:0.65rem">ПЕРЕХВАЧЕНО</span>
+          </div>
           <div class="panel-body">
+
+            <label class="label">Шифртекст</label>
+            <div id="challengeCipherDisplay" class="cipher-output" style="font-size:0.92rem; letter-spacing:0.12em; line-height:1.8; margin-bottom:1.25rem; cursor:text; user-select:all"></div>
+
             <div class="grid-2" style="gap:1rem; margin-bottom:1rem">
               <div>
-                <label class="label">Шифртекст</label>
-                <textarea id="revealCipher" style="height:80px"></textarea>
+                <label class="label">Введи ключ (3 буквы)</label>
+                <input type="text" id="revealKey" placeholder="???" maxlength="10"
+                  style="text-transform:uppercase; font-size:1.15rem; letter-spacing:0.25em; text-align:center">
               </div>
-              <div>
-                <label class="label">Найденный ключ</label>
-                <input type="text" id="revealKey" placeholder="...">
+              <div style="display:flex; align-items:flex-end">
+                <button class="btn btn-primary btn-lg" id="revealBtn" style="width:100%">✦ РАСШИФРОВАТЬ!</button>
               </div>
             </div>
-            <button class="btn btn-primary btn-lg" id="revealBtn">✦ РАСШИФРОВАТЬ!</button>
 
+            <!-- Wrong key -->
+            <div id="wrongKeyMsg" style="display:none" class="callout callout-red">
+              <strong class="red">✗ Неверный ключ.</strong> Попробуй ещё раз.<br>
+              <span style="font-size:0.82rem; color:var(--text-dim); margin-top:0.3rem; display:block">
+                Используй частотный анализ из шага&nbsp;3: разбей шифртекст на 3 колонки
+                и найди самую частую букву в каждой — предположи, что это зашифрованная E.
+              </span>
+              <button class="btn btn-ghost mt-2" id="showAnswerBtn" style="font-size:0.8rem">
+                Узнать ответ с объяснением
+              </button>
+            </div>
+
+            <!-- Answer explanation -->
+            <div id="answerRevealWrap" style="display:none" class="callout mt-2" style="border-color:var(--amber-dim)">
+              <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.75rem; flex-wrap:wrap">
+                <strong class="amber">Правильный ключ:</strong>
+                <span class="green" id="correctKeyDisplay"
+                  style="font-size:1.4rem; letter-spacing:0.3em; font-family:var(--font-title)"></span>
+              </div>
+              <div style="font-size:0.83rem; color:var(--text-dim); line-height:1.75">
+                <strong style="color:var(--white)">Как найти — шаг за шагом:</strong><br><br>
+                <strong class="amber">1. Метод Казиски:</strong> ищи повторяющиеся триграммы в шифртексте.
+                Посчитай расстояния между каждой парой совпадений. НОД всех расстояний = длина ключа =
+                <strong class="green">3</strong>.<br><br>
+                <strong class="amber">2. Частотный анализ:</strong> раздели шифртекст на 3 колонки
+                (позиции 1,4,7,… → колонка&nbsp;1; 2,5,8,… → колонка&nbsp;2; 3,6,9,… → колонка&nbsp;3).
+                Каждая колонка — простой шифр Цезаря.<br>
+                Найди самую частую букву в каждой колонке. Предположи, что она соответствует
+                <strong class="green">E</strong> (самая частая в английском).<br>
+                Сдвиг = (позиция_буквы − 4 + 26) mod 26 → буква ключа.<br><br>
+                Объедини три найденных буквы — получишь ключ.
+              </div>
+              <button class="btn btn-primary mt-2" id="useCorrectKeyBtn">Подставить правильный ключ</button>
+            </div>
+
+            <!-- Success -->
             <div id="revealWrap" class="mt-3" style="display:none">
+              <div class="callout callout-green" style="margin-bottom:1rem">
+                <strong class="green">✓ Правильно! Операция выполнена.</strong>
+              </div>
               <label class="label">Открытый текст</label>
-              <div id="revealOutput" class="cipher-output" style="color:var(--amber); font-size:1rem; line-height:2; min-height:60px"></div>
+              <div id="revealOutput" class="cipher-output"
+                style="color:var(--amber); font-size:1rem; line-height:2; min-height:60px"></div>
             </div>
           </div>
         </div>
 
-        <div class="callout callout-green mt-3">
-          <strong class="green">✓ Операция выполнена.</strong> Шифр, 300 лет считавшийся нерасшифруемым, взломан.
-        </div>
+        <!-- Summary — shown after correct decryption -->
+        <div id="summaryWrap" style="display:none">
+          <div class="callout callout-green mt-3">
+            <strong class="green">✓ Операция выполнена.</strong> Шифр, 300 лет считавшийся нерасшифруемым, взломан.
+          </div>
 
-        <!-- ── Итог ── -->
-        <div class="panel mt-3">
-          <div class="panel-header"><h3>Итог операции · Что ты только что сделал</h3></div>
-          <div class="panel-body">
+          <div class="panel mt-3">
+            <div class="panel-header"><h3>Итог операции · Что ты только что сделал</h3></div>
+            <div class="panel-body">
 
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem">
-              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
-                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">300</div>
-                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЛЕТ</div>
-                <div style="font-size:0.78rem;color:var(--text-dim)">шифр считался нерасшифруемым — с 1553 по 1863</div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1.5rem">
+                <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                  <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">300</div>
+                  <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЛЕТ</div>
+                  <div style="font-size:0.78rem;color:var(--text-dim)">шифр считался нерасшифруемым — с 1553 по 1863</div>
+                </div>
+                <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                  <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">2</div>
+                  <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">МЕТОДА</div>
+                  <div style="font-size:0.78rem;color:var(--text-dim)">Казиски + частотный анализ — твои инструменты взлома</div>
+                </div>
+                <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
+                  <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">~6</div>
+                  <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЧАСОВ</div>
+                  <div style="font-size:0.78rem;color:var(--text-dim)">столько уходило на взлом реальной депеши в 1917</div>
+                </div>
               </div>
-              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
-                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">2</div>
-                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">МЕТОДА</div>
-                <div style="font-size:0.78rem;color:var(--text-dim)">Казиски + частотный анализ — твои инструменты взлома</div>
+
+              <p style="font-size:0.9rem;color:var(--text-dim);line-height:1.8">
+                Ты применил те же два шага, что и криптоаналитики союзников в Первой мировой:
+                нашёл длину ключа через повторяющиеся триграммы, затем свёл каждую колонку
+                к простому шифру Цезаря и вычислил сдвиг по частоте букв.
+              </p>
+
+              <div class="callout mt-2">
+                <strong class="amber">Фундаментальная слабость Vigenère:</strong> шифр <em>периодичен</em>.
+                Один ключ используется снова и снова. Как только найдена его длина —
+                задача распадается на несколько независимых шифров Цезаря, каждый из которых
+                тривиально взламывается за секунды.
               </div>
-              <div style="background:var(--bg-card);padding:1.1rem;text-align:center">
-                <div style="font-size:2rem;color:var(--amber);font-family:var(--font-title);line-height:1">~6</div>
-                <div style="font-size:0.62rem;color:var(--text-dim);letter-spacing:0.15em;margin:0.2rem 0">ЧАСОВ</div>
-                <div style="font-size:0.78rem;color:var(--text-dim)">столько уходило на взлом реальной депеши в 1917</div>
+
+              <div class="callout callout-red mt-2">
+                <strong class="red">Историческая цена взлома:</strong> осознав уязвимость ручных шифров,
+                Германия вложила ресурсы в <em>электромеханическое</em> шифрование.
+                Итог — машина <strong style="color:var(--white)">Enigma</strong>, 158 квинтиллионов
+                конфигураций и следующая операция.
               </div>
+
+              <div class="callout callout-green mt-2">
+                <strong class="green">Ключевой урок:</strong> безопасность шифра определяется
+                не его сложностью на вид, а математической стойкостью к атаке.
+                «Выглядит сложно» — не аргумент. Именно это открытие превратило
+                криптографию из ремесла в науку.
+              </div>
+
             </div>
+          </div>
 
-            <p style="font-size:0.9rem;color:var(--text-dim);line-height:1.8">
-              Ты применил те же два шага, что и криптоаналитики союзников в Первой мировой:
-              нашёл длину ключа через повторяющиеся триграммы, затем свёл каждую колонку
-              к простому шифру Цезаря и вычислил сдвиг по частоте букв.
-            </p>
-
-            <div class="callout mt-2">
-              <strong class="amber">Фундаментальная слабость Vigenère:</strong> шифр <em>периодичен</em>.
-              Один ключ используется снова и снова. Как только найдена его длина —
-              задача распадается на несколько независимых шифров Цезаря, каждый из которых
-              тривиально взламывается за секунды.
-            </div>
-
-            <div class="callout callout-red mt-2">
-              <strong class="red">Историческая цена взлома:</strong> осознав уязвимость ручных шифров,
-              Германия вложила ресурсы в <em>электромеханическое</em> шифрование.
-              Итог — машина <strong style="color:var(--white)">Enigma</strong>, 158 квинтиллионов
-              конфигураций и следующая операция.
-            </div>
-
-            <div class="callout callout-green mt-2">
-              <strong class="green">Ключевой урок:</strong> безопасность шифра определяется
-              не его сложностью на вид, а математической стойкостью к атаке.
-              «Выглядит сложно» — не аргумент. Именно это открытие превратило
-              криптографию из ремесла в науку.
-            </div>
-
+          <div class="mt-3" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
+            <a href="enigma.html" class="btn btn-green btn-lg">
+              СЛЕДУЮЩАЯ: ОП. ENIGMA &nbsp;<span style="opacity:.7">›</span>
+            </a>
+            <button class="btn btn-ghost" id="restartBtn">⟳ НАЧАТЬ ЗАНОВО</button>
+            <a href="index.html" class="btn btn-ghost">← В АРХИВ</a>
           </div>
         </div>
 
-        <div class="mt-3" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
-          <a href="enigma.html" class="btn btn-green btn-lg">
-            СЛЕДУЮЩАЯ: ОП. ENIGMA &nbsp;<span style="opacity:.7">›</span>
-          </a>
-          <a href="index.html" class="btn btn-ghost">← В АРХИВ</a>
+        <!-- Replay button shown before success too -->
+        <div class="mt-3" id="earlyRestartWrap">
+          <button class="btn btn-ghost" id="earlyRestartBtn" style="font-size:0.8rem; opacity:0.7">
+            ⟳ Начать операцию заново
+          </button>
         </div>
+
       </div>
 
     </div>
@@ -435,6 +501,11 @@ import {
   ALPHA, normalize, encrypt, decrypt, encryptSteps,
   letterFrequency, kasiskiTrigrams, gcdList, splitColumns, guessShift
 } from './js/ciphers/vigenere.js';
+
+// ── Challenge definition ──
+const CHALLENGE_PLAIN = 'GERMANADVANCEONPARISALLUNITSMOVEFORWARD';
+const CHALLENGE_KEY   = 'WAR';
+const CHALLENGE_CIPHER = encrypt(CHALLENGE_PLAIN, CHALLENGE_KEY);
 
 // ── Step navigation ──
 let currentStep = 0;
@@ -653,18 +724,20 @@ function renderFreqColumns() {
 document.getElementById('freqSplitBtn').addEventListener('click', renderFreqColumns);
 
 // ══════════════════════════════════
-// STEP 4 — Reveal
+// STEP 4 — Challenge
 // ══════════════════════════════════
 function prefillReveal() {
-  const cipher = kasiskiCiphertext || document.getElementById('kasiskiInput').value;
-  document.getElementById('revealCipher').value = normalize(cipher);
-  document.getElementById('revealKey').value = foundKey || '';
+  document.getElementById('challengeCipherDisplay').textContent = CHALLENGE_CIPHER;
+  document.getElementById('revealKey').value = '';
+  document.getElementById('revealWrap').style.display = 'none';
+  document.getElementById('wrongKeyMsg').style.display = 'none';
+  document.getElementById('answerRevealWrap').style.display = 'none';
+  document.getElementById('summaryWrap').style.display = 'none';
+  document.getElementById('correctKeyDisplay').textContent = CHALLENGE_KEY;
 }
 
-document.getElementById('revealBtn').addEventListener('click', () => {
-  const ct  = document.getElementById('revealCipher').value;
-  const key = document.getElementById('revealKey').value;
-  const pt  = decrypt(ct, key);
+function showDecryptedSuccess(key) {
+  const pt  = decrypt(CHALLENGE_CIPHER, key);
   const out = document.getElementById('revealOutput');
   out.innerHTML = '';
   pt.split('').forEach((ch, i) => {
@@ -675,10 +748,62 @@ document.getElementById('revealBtn').addEventListener('click', () => {
     out.appendChild(span);
   });
   document.getElementById('revealWrap').style.display = 'block';
+  document.getElementById('wrongKeyMsg').style.display = 'none';
+  document.getElementById('summaryWrap').style.display = 'block';
+  document.getElementById('earlyRestartWrap').style.display = 'none';
   localStorage.setItem('done_vigenere', '1');
-  document.getElementById('clearanceLevel').textContent =
-    ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+  const newLvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+  document.getElementById('clearanceLevel').textContent = newLvl;
+  document.getElementById('clearanceFill').style.width = (newLvl / 3 * 100) + '%';
+}
+
+document.getElementById('revealBtn').addEventListener('click', () => {
+  const key = normalize(document.getElementById('revealKey').value);
+  if (!key) return;
+
+  if (key === CHALLENGE_KEY) {
+    showDecryptedSuccess(key);
+  } else {
+    const input = document.getElementById('revealKey');
+    input.classList.add('shake');
+    setTimeout(() => input.classList.remove('shake'), 400);
+    document.getElementById('wrongKeyMsg').style.display = 'block';
+    document.getElementById('revealWrap').style.display = 'none';
+  }
 });
+
+document.getElementById('showAnswerBtn').addEventListener('click', () => {
+  document.getElementById('answerRevealWrap').style.display = 'block';
+});
+
+document.getElementById('useCorrectKeyBtn').addEventListener('click', () => {
+  document.getElementById('revealKey').value = CHALLENGE_KEY;
+  document.getElementById('answerRevealWrap').style.display = 'none';
+  document.getElementById('wrongKeyMsg').style.display = 'none';
+  showDecryptedSuccess(CHALLENGE_KEY);
+});
+
+function restartOperation() {
+  localStorage.removeItem('done_vigenere');
+  const newLvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+  document.getElementById('clearanceLevel').textContent = newLvl;
+  document.getElementById('clearanceFill').style.width = (newLvl / 3 * 100) + '%';
+  // Reset all step inputs
+  document.getElementById('kasiskiInput').value =
+    'CHREEVOAHMAERATBIAXXWTNXBEEOPHBSBQMQEQERBWRVXUOAKXAOSXXWEAHBWGJMMQMNKGRFVGXWTRZXWIAKLXFPSKAUTEMNDCMGTSXMXBTYXMTSX';
+  document.getElementById('kasiskiResult').style.display = 'none';
+  document.getElementById('kasiskiGcd').style.display = 'none';
+  document.getElementById('toFreqBtn').style.display = 'none';
+  document.getElementById('freqColumns').innerHTML = '';
+  document.getElementById('freqKeyRecover').style.display = 'none';
+  foundKey = '';
+  foundKeyLen = 3;
+  kasiskiCiphertext = '';
+  goStep(0);
+}
+
+document.getElementById('restartBtn').addEventListener('click', restartOperation);
+document.getElementById('earlyRestartBtn').addEventListener('click', restartOperation);
 </script>
 
 <script src="js/ui/common.js"></script>

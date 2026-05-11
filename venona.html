@@ -420,7 +420,7 @@
 
         <div class="mt-3" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
           <a href="index.html" class="btn btn-green">ВЕРНУТЬСЯ В АРХИВ ▶</a>
-          <span style="font-size:0.75rem;color:var(--text-dim);letter-spacing:0.1em">ВСЕ ТРИ ОПЕРАЦИИ ПРОЙДЕНЫ</span>
+          <button class="btn btn-ghost" id="venonaRestartBtn">⟳ НАЧАТЬ ЗАНОВО</button>
         </div>
       </div>
 
@@ -761,6 +761,35 @@ document.getElementById('revealDepthBtn').addEventListener('click', () => {
 
 // Pre-fill XOR input if coming from step 3
 if(depthXor) document.getElementById('xorInput').value = depthXor;
+
+// Restart operation
+document.getElementById('venonaRestartBtn').addEventListener('click', () => {
+  localStorage.removeItem('done_venona');
+  const newLvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+  document.getElementById('clearanceLevel').textContent = newLvl;
+  document.getElementById('clearanceFill').style.width = (newLvl / 3 * 100) + '%';
+  // Reset depth/xor state
+  depthP1val = 'SENDTROOPS';
+  depthP2val = 'MEETATDAWN';
+  depthKey   = '';
+  depthXor   = '';
+  document.getElementById('depthP1').value = 'SENDTROOPS';
+  document.getElementById('depthP2').value = 'MEETATDAWN';
+  document.getElementById('depthResult').style.display   = 'none';
+  document.getElementById('depthXorResult').style.display = 'none';
+  document.getElementById('toCribXorBtn').style.display  = 'none';
+  // Reset crib XOR
+  document.getElementById('xorInput').value = '';
+  document.getElementById('cribXorWord').value = 'SEND';
+  document.getElementById('cribXorOffset').value = '0';
+  document.getElementById('cribXorResult').style.display = 'none';
+  document.getElementById('workspace').innerHTML = '';
+  document.getElementById('depthRevealResult').style.display = 'none';
+  // Reset OTP panel
+  document.getElementById('otpEncResult').style.display = 'none';
+  document.getElementById('otpDecOut').textContent = '';
+  goStep(0);
+});
 </script>
 
 <script src="js/ui/common.js"></script>

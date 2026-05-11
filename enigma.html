@@ -443,6 +443,7 @@
           <a href="venona.html" class="btn btn-green btn-lg">
             СЛЕДУЮЩАЯ: ОП. VENONA &nbsp;<span style="opacity:.7">›</span>
           </a>
+          <button class="btn btn-ghost" id="enigmaRestartBtn">⟳ НАЧАТЬ ЗАНОВО</button>
           <a href="index.html" class="btn btn-ghost">← В АРХИВ</a>
         </div>
       </div>
@@ -929,6 +930,31 @@ document.getElementById('bombeStartBtn').addEventListener('click', async () => {
     document.getElementById('bombeStartBtn').disabled = false;
     bombeRunning = false;
   }, 1800);
+});
+
+// Restart operation
+document.getElementById('enigmaRestartBtn').addEventListener('click', () => {
+  localStorage.removeItem('done_enigma');
+  const newLvl = ['vigenere','enigma','venona'].filter(o => localStorage.getItem('done_'+o)).length;
+  document.getElementById('clearanceLevel').textContent = newLvl;
+  document.getElementById('clearanceFill').style.width = (newLvl / 3 * 100) + '%';
+  // Reset bombe UI
+  document.getElementById('bombeVisual').style.display = 'none';
+  document.getElementById('bombeDecryptPanel').style.display = 'none';
+  document.getElementById('enigmaDoneNote').style.display = 'none';
+  document.getElementById('bombeStops').innerHTML = '';
+  document.getElementById('bombeProgressFill').style.width = '0%';
+  document.getElementById('bombeTestedCount').textContent = '0';
+  ['drum1','drum2','drum3'].forEach(id => {
+    const d = document.getElementById(id);
+    d.classList.remove('spinning','stopped');
+    d.querySelector('span').textContent = 'A';
+  });
+  // Reset crib drag
+  document.getElementById('cribResult').style.display = 'none';
+  // Reset simulator
+  initMachine();
+  goStep(0);
 });
 
 // Decrypt with found config
