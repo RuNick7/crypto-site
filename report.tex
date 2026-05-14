@@ -1,5 +1,5 @@
 % ============================================================
-%  Технический отчёт по проекту «Секретный Архив»
+%  Отчёт по проекту «Секретный Архив»
 % ============================================================
 \documentclass[12pt, a4paper]{article}
 
@@ -9,7 +9,6 @@
 \usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2cm]{geometry}
 \usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{longtable}
 \usepackage{array}
 \usepackage{enumitem}
 \usepackage{titlesec}
@@ -17,786 +16,328 @@
 \usepackage{setspace}
 \usepackage{float}
 \usepackage{hyperref}
-\usepackage{tikz}
-\usepackage{amsmath}
-\usepackage{listings}
-\usepackage{mdframed}
-\usepackage{caption}
+\usepackage{graphicx}
 
 % ── Цвета ─────────────────────────────────────────────────
 \definecolor{amber}{RGB}{180,110,10}
 \definecolor{darkred}{RGB}{140,30,30}
 \definecolor{darkgreen}{RGB}{30,100,50}
-\definecolor{codebg}{RGB}{245,245,250}
-\definecolor{kw}{RGB}{0,80,180}
-\definecolor{str}{RGB}{0,120,50}
-\definecolor{cmt}{RGB}{120,120,140}
-\definecolor{num}{RGB}{160,60,0}
+\definecolor{blockbg}{RGB}{248,246,240}
 
-% ── Листинги ──────────────────────────────────────────────
-\lstdefinestyle{js}{
-  language=JavaScript,
-  backgroundcolor=\color{codebg},
-  basicstyle=\ttfamily\small,
-  keywordstyle=\color{kw}\bfseries,
-  stringstyle=\color{str},
-  commentstyle=\color{cmt}\itshape,
-  numberstyle=\tiny\color{gray},
-  numbers=left, numbersep=6pt,
-  frame=single, framesep=3pt,
-  rulecolor=\color{gray!35},
-  breaklines=true, captionpos=b,
-  tabsize=2, showstringspaces=false,
-  morekeywords={const,let,async,await,import,export,
-                from,class,extends,of,true,false},
-}
-
-\lstdefinestyle{html}{
-  language=HTML,
-  backgroundcolor=\color{codebg},
-  basicstyle=\ttfamily\small,
-  keywordstyle=\color{kw}\bfseries,
-  stringstyle=\color{str},
-  commentstyle=\color{cmt}\itshape,
-  numberstyle=\tiny\color{gray},
-  numbers=left, numbersep=6pt,
-  frame=single, framesep=3pt,
-  rulecolor=\color{gray!35},
-  breaklines=true, captionpos=b,
-  tabsize=2,
-}
-
-\lstdefinestyle{css}{
-  language=CSS,
-  backgroundcolor=\color{codebg},
-  basicstyle=\ttfamily\small,
-  keywordstyle=\color{num}\bfseries,
-  stringstyle=\color{str},
-  commentstyle=\color{cmt}\itshape,
-  numberstyle=\tiny\color{gray},
-  numbers=left, numbersep=6pt,
-  frame=single, framesep=3pt,
-  rulecolor=\color{gray!35},
-  breaklines=true, captionpos=b,
-  tabsize=2,
-}
-
-% ── Рамка для важных блоков ───────────────────────────────
-\newmdenv[
-  backgroundcolor=codebg,
-  linecolor=amber,
-  linewidth=1pt,
-  leftline=true, rightline=false,
-  topline=false, bottomline=false,
-  innerleftmargin=12pt, innerrightmargin=8pt,
-  innertopmargin=6pt, innerbottommargin=6pt,
-]{notebox}
+% ── Секции ────────────────────────────────────────────────
+\titleformat{\section}{\large\bfseries\color{darkred}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries\color{amber}}{}{0em}{}
 
 % ── Колонтитулы ───────────────────────────────────────────
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\textit{Технический отчёт — «Секретный Архив»}}
-\fancyhead[R]{\small\thepage}
-\fancyfoot[C]{\small\textcolor{gray}{\url{https://runick7.github.io/crypto-site/}}}
+\fancyhead[L]{\small\textit{«Секретный Архив» — интерактивный проект}}
+\fancyhead[R]{\small\textit{2026}}
+\fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0.4pt}
-
-% ── Заголовки ─────────────────────────────────────────────
-\titleformat{\section}
-  {\large\bfseries\color{darkred}}{\thesection.}{0.7em}{}
-  [\vspace{-0.3em}\textcolor{amber}{\rule{\linewidth}{0.6pt}}]
-\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.7em}{}
-\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{0.7em}{}
 
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.45em}
+\setlength{\parskip}{8pt}
 \onehalfspacing
 
-\hypersetup{
-  pdftitle={Технический отчёт — Секретный Архив},
-  colorlinks=true, linkcolor=darkred, urlcolor=darkred,
+% ── Выделяющийся блок ─────────────────────────────────────
+\newenvironment{factbox}{%
+  \vspace{4pt}\begin{lrbox}{\@tempboxa}\begin{minipage}{0.93\textwidth}%
+  \setlength{\parskip}{5pt}\small
+}{%
+  \end{minipage}\end{lrbox}%
+  \fcolorbox{amber}{blockbg}{\usebox{\@tempboxa}}\vspace{4pt}
 }
 
-% =============================================================
+% ============================================================
 \begin{document}
 
-% ── Титул ────────────────────────────────────────────────────
+% ── Титульная страница ─────────────────────────────────────
 \begin{titlepage}
   \centering
-  \vspace*{1.8cm}
-  {\small\textcolor{gray}{ТЕХНИЧЕСКИЙ ОТЧЁТ ПО ВЕБ-ПРОЕКТУ}}\\[1em]
-
-  \begin{tikzpicture}
-    \draw[amber, line width=1.5pt] (0,0) rectangle (13,2.2);
-    \node at (6.5,1.5) {\LARGE\bfseries\color{darkred} Секретный Архив};
-    \node at (6.5,0.65) {\normalsize Интерактивный образовательный сайт по криптографии};
-  \end{tikzpicture}
-
-  \vspace{2em}
-
-  \begin{tabular}{rl}
-    \textbf{Репозиторий:}  & \url{https://github.com/RuNick7/crypto-site}      \\[0.4em]
-    \textbf{Хостинг:}      & \url{https://runick7.github.io/crypto-site/}      \\[0.4em]
-    \textbf{Технологии:}   & HTML5 · CSS3 · JavaScript ES2020 (без фреймворков) \\[0.4em]
-    \textbf{Объём кода:}   & $\approx$5\,500 строк, 11 исходных файлов         \\[0.4em]
-    \textbf{Коммитов:}     & 10                                                \\[0.4em]
-    \textbf{Дата:}         & Май 2026                                          \\
-  \end{tabular}
-
-  \vfill
-
-  \begin{tabular}{ccc}
-    \large\bfseries Оп. VIGENÈRE &
-    \large\bfseries Оп. ENIGMA   &
-    \large\bfseries Оп. VENONA   \\
-    \small 1914–1918 &
-    \small 1939–1945 &
-    \small 1943–1980 \\
-  \end{tabular}
-
+  \vspace*{2cm}
+  {\Huge\bfseries\color{darkred} «Секретный Архив»\par}
+  \vspace{0.5cm}
+  {\Large Интерактивный сайт о криптографии Второй мировой войны\par}
+  \vspace{1.5cm}
+  \rule{0.6\textwidth}{0.8pt}\par
+  \vspace{1.5cm}
+  {\large Отчёт по проекту\par}
+  \vspace{0.5cm}
+  {\normalsize Предмет: История\par}
   \vspace{2cm}
+  {\large\bfseries Автор:} \hspace{0.3cm} {\large [Имя]\par}
+  \vspace{0.4cm}
+  {\large\bfseries Руководитель:} \hspace{0.3cm} {\large [Имя преподавателя]\par}
+  \vspace{2cm}
+  {\normalsize 2026\par}
 \end{titlepage}
 
+% ── Оглавление ────────────────────────────────────────────
 \tableofcontents
 \newpage
 
-% =============================================================
-\section{Цели и общая концепция}
+% ============================================================
+\section{Введение}
 
-Проект представляет собой статический образовательный сайт, демонстрирующий
-три ключевых эпизода истории военной криптографии. Каждая операция реализована
-как многошаговый интерактивный урок: пользователь сначала знакомится с принципом
-шифра через визуализации и симуляторы, а затем решает фиксированное задание
-с проверкой ответа.
+Криптография сыграла одну из ключевых ролей во Второй мировой войне. Способность
+союзников читать зашифрованные немецкие и японские сообщения повлияла на исход
+целых операций и, по оценкам историков, сократила войну на два года.
 
-\textbf{Ключевые требования к реализации:}
-\begin{itemize}[leftmargin=2em]
-  \item нет сборщиков, нет фреймворков — только нативный HTML/CSS/JS;
-  \item вся криптографическая логика отделена от DOM-кода;
-  \item задания имеют однозначно верный ответ с валидацией;
-  \item при неверном ответе пользователь получает пошаговое объяснение;
-  \item операции можно проходить повторно (кнопка «Начать заново»);
-  \item прогресс хранится в \texttt{localStorage}.
+Цель проекта --- создать интерактивный веб-сайт \textbf{«Секретный Архив»}, на
+котором посетитель может сам прочувствовать работу криптоаналитиков военного
+времени: зашифровать и взломать три реальные системы, использовавшиеся в 1939--1945 гг.
+
+Сайт построен как последовательность «операций» с заданием: пользователь должен
+найти правильный ключ или позицию, иначе ему предлагают подсказки и пошаговое
+объяснение. Прогресс сохраняется между сессиями.
+
+% ============================================================
+\section{Операция I — Шифр Виженера}
+
+\subsection{Историческая справка}
+
+Шифр Виженера был изобретён в XVI веке, но широко применялся вплоть до начала
+XX века. В годы Второй мировой войны его использовали некоторые части вермахта
+для полевой связи низкого уровня секретности, а также различные движения
+Сопротивления.
+
+Принцип прост: каждая буква открытого текста сдвигается на величину, заданную
+соответствующей буквой ключевого слова. Ключевое слово повторяется на протяжении
+всего сообщения.
+
+\begin{factbox}
+\textbf{Пример.} Ключ \texttt{WAR}, сообщение \texttt{ATTACK}:
+
+\texttt{A + W = W}, \texttt{T + A = T}, \texttt{T + R = K}, \texttt{A + W = W}, \ldots
+
+Каждый символ ключа задаёт свой «алфавит Цезаря» для соответствующей буквы.
+\end{factbox}
+
+\subsection{Как взламывают шифр Виженера}
+
+В 1863 году прусский офицер Фридрих Касиски опубликовал метод, который сломал
+репутацию «невзламываемого» шифра:
+
+\begin{enumerate}[leftmargin=1.5cm]
+  \item \textbf{Анализ повторяющихся групп букв.} Если одинаковый фрагмент
+        открытого текста совпал с одинаковой частью ключа, в шифртексте
+        появится идентичная триграмма. Расстояние между такими триграммами
+        кратно длине ключа.
+  \item \textbf{Определение длины ключа} — наибольший общий делитель
+        расстояний между повторами.
+  \item \textbf{Частотный анализ по столбцам.} Зная длину ключа, каждый столбец
+        оказывается простым шифром Цезаря. Наиболее частая буква столбца
+        соответствует букве «E» в английском тексте — так восстанавливается
+        ключ.
+\end{enumerate}
+
+\subsection{Задание на сайте}
+
+Посетителю выдаётся зашифрованное сообщение о движении немецких войск.
+Нужно провести анализ Касиски прямо на странице, угадать длину ключа,
+восстановить ключевое слово \textbf{WAR} и расшифровать сообщение.
+Если ключ введён неверно --- появляется анимация тревоги и кнопка
+«Узнать ответ» с пошаговым объяснением.
+
+% ============================================================
+\section{Операция II — Машина «Энигма»}
+
+\subsection{Историческая справка}
+
+«Энигма» --- электромеханическая роторная машина, разработанная в 1920-х годах
+и принятая на вооружение германской армией, флотом и люфтваффе. Она стала
+символом военной тайны: немецкое командование считало её абсолютно
+защищённой.
+
+\begin{factbox}
+\textbf{Устройство.} Нажатая клавиша проходит через:
+\begin{itemize}[leftmargin=1cm, topsep=2pt, itemsep=1pt]
+  \item \textbf{Коммутационную панель} --- меняет пары букв до ввода в роторы;
+  \item \textbf{Три (или четыре) ротора} --- каждый содержит внутренние
+        контакты и вращается при каждом нажатии, меняя подстановку;
+  \item \textbf{Рефлектор} --- отражает сигнал обратно через роторы;
+  \item \textbf{Коммутационную панель} повторно.
 \end{itemize}
+Важное свойство: буква никогда не шифруется сама в себя --- это и стало
+главной уязвимостью.
+\end{factbox}
 
-% =============================================================
-\section{Архитектура проекта}
+\subsection{Взлом: «Бомба» Тьюринга}
 
-\subsection{Файловая структура}
+Польские криптоаналитики (Реевский, Ружицкий, Зыгальский) первыми взломали
+«Энигму» в 1930-х годах. После оккупации Польши их работы передали британцам в
+Блетчли-Парк. Там Алан Тьюринг усовершенствовал польский метод и создал
+электромеханическое устройство --- \textbf{«Бомбу»}.
 
-\begin{verbatim}
-crypto-site/
-├── index.html            — главная страница (428 строк)
-├── vigenere.html         — операция Vigenère (811 строк)
-├── enigma.html           — операция Enigma (1072 строки)
-├── venona.html           — операция Venona (797 строк)
-├── css/
-│   ├── base.css          — CSS-переменные, сброс, типографика (258)
-│   ├── layout.css        — навигация, сетка, карточки (326)
-│   ├── design.css        — компоненты UI (1130)
-│   └── animations.css    — keyframe-анимации (253)
-└── js/
-    ├── ciphers/
-    │   ├── vigenere.js   — шифр Виженера (118)
-    │   ├── enigma.js     — машина Энигма (197)
-    │   └── otp.js        — одноразовый блокнот (75)
-    └── ui/
-        └── common.js     — бургер-меню, прогресс-бар
-\end{verbatim}
+Принцип «Бомбы» основан на \textbf{известном открытом тексте} (criб):
+операторы «Энигмы» нередко начинали шифровку стандартными фразами ---
+прогнозы погоды всегда начинались со слова \texttt{WETTER} («погода»),
+метеосводки флота передавались каждый день в 06:00.
 
-\subsection{Принцип разделения логики и представления}
+\begin{enumerate}[leftmargin=1.5cm]
+  \item Из наблюдений известно: зашифрованный текст начинается с
+        \texttt{BFEUPH\ldots}, а открытый --- с \texttt{WETTER}.
+  \item «Бомба» перебирала все $26^3 = 17\,576$ возможных начальных позиций
+        роторов.
+  \item На каждой позиции проверялось: если расшифровать первые шесть букв
+        шифртекста, получится ли \texttt{WETTER}?
+  \item Позиция, проходящая проверку --- «стоп» --- передавалась
+        криптоаналитикам для окончательного чтения.
+\end{enumerate}
 
-Каждый файл \texttt{js/ciphers/*.js} — чистый ES-модуль без каких-либо
-ссылок на DOM. Он экспортирует только функции и классы над строками и числами.
-HTML-страницы подключают эти модули через \verb|<script type="module">|
-и используют их результаты для построения интерфейса.
+Благодаря взлому «Энигмы» союзники читали немецкие морские депеши, что
+позволило избежать огромных потерь в «Битве за Атлантику».
 
-\begin{lstlisting}[style=html, caption={Подключение модуля в vigenere.html}]
-<script type="module">
-import {
-  normalize, encrypt, decrypt, encryptSteps,
-  kasiskiTrigrams, gcdList, splitColumns,
-  guessShift, letterFrequency
-} from './js/ciphers/vigenere.js';
+\subsection{Задание на сайте}
 
-// Вся DOM-логика находится здесь
-</script>
-\end{lstlisting}
+Посетитель получает перехваченную шифрограмму Кригсмарине. Задача ---
+запустить симулятор «Бомбы», дождаться результата перебора и увидеть, как
+машина находит единственную позицию \textbf{AAA}, при которой расшифровка
+начинается с \texttt{WETTER}. После этого открывается полный перевод немецкого
+метеодонесения.
 
-\subsection{Дизайн-токены (CSS-переменные)}
+% ============================================================
+\section{Операция III — Операция «Венона»}
 
-Вся визуальная система определена через CSS-переменные в \texttt{base.css},
-что обеспечивает единообразие на всех страницах:
+\subsection{Историческая справка}
 
-\begin{lstlisting}[style=css, caption={Фрагмент дизайн-токенов из base.css}]
-:root {
-  /* Фон */
-  --bg:        #0a0a0f;
-  --bg-card:   #0f0f18;
-  --bg-input:  #111122;
-  --border:    #1e1e2e;
+Советский Союз использовал одноразовые шифровальные блокноты (OTP ---
+\textit{One-Time Pad}) для шифрования агентурных донесений. Теоретически
+правильно используемый одноразовый блокнот абсолютно невзламываем.
 
-  /* Цвета */
-  --amber:     #f5a623;
-  --amber-dim: #a06010;
-  --green:     #00ff41;
-  --green-dim: #00aa2b;
-  --red:       #ff3333;
-  --white:     #e8e8f0;
-  --text-dim:  #666680;
+Однако в 1942--1943 годах советские шифровальщики по ошибке \textbf{повторно
+использовали страницы блокнотов} для разных сообщений. Эту ошибку и
+эксплуатировал американский проект \textbf{«Венона»} (1943--1980).
 
-  /* Шрифты */
-  --font-title: 'Special Elite', serif;
-  --font-mono:  'Share Tech Mono', monospace;
-  --btn-font:   'Bebas Neue', sans-serif;
+\begin{factbox}
+\textbf{Уязвимость «глубины».} Если два сообщения $C_1$ и $C_2$ зашифрованы
+одним и тем же ключом $K$, их XOR (побитовое «исключающее или») равен XOR
+открытых текстов:
+\[
+  C_1 \oplus C_2 \;=\; P_1 \oplus P_2
+\]
+Ключ исчезает. Криптоаналитик работает только с открытыми текстами, не зная
+ключа.
+\end{factbox}
 
-  /* Прочее */
-  --radius:     4px;
-  --transition: 0.2s ease;
-}
-\end{lstlisting}
+\subsection{Метод криб-драга}
+
+Зная или угадывая часть одного сообщения (криб), аналитик «тащит» его по
+XOR двух шифртекстов и смотрит, какие позиции дают осмысленный текст в
+обоих каналах. Так были установлены личности советских агентов, включая
+Юлиуса Розенберга.
+
+\subsection{Задание на сайте}
+
+Посетителю предлагаются два советских донесения, зашифрованных одним блокнотом.
+Нужно наложить их друг на друга, провести криб-драг по XOR-результату и
+восстановить фрагменты обоих сообщений. После завершения операции
+открывается историческая справка об операции «Венона».
+
+% ============================================================
+\section{Реализация проекта}
+
+\subsection{Структура сайта}
+
+Сайт состоит из четырёх страниц: главная с матричным вступлением и тремя
+«досье операций», и по одной странице на каждую операцию. Все страницы
+выполнены в едином стиле тёмного терминала с янтарными акцентами,
+вдохновлённом секретными档案和 дешифровальными центрами военного времени.
+
+Каждая операция разбита на шаги:
+\begin{enumerate}[leftmargin=1.5cm, itemsep=2pt]
+  \item Историческая справка с иллюстрациями;
+  \item Демонстрация работы шифра (интерактивный ввод);
+  \item Анализ и взлом (симулятор Касиски / «Бомбы» / криб-драга);
+  \item Финальное задание с проверкой ответа.
+\end{enumerate}
 
 \subsection{Система прогресса}
 
-Прохождение каждой операции сохраняется в \texttt{localStorage}.
-Скрипт \texttt{common.js} читает эти значения на каждой странице
-и обновляет счётчик «ДОПУСК N/3» и прогресс-бар:
-
-\begin{lstlisting}[style=js, caption={common.js — синхронизация прогресса}]
-const ops  = ['vigenere', 'enigma', 'venona'];
-const done = ops.filter(o => localStorage.getItem('done_' + o)).length;
-if (lvlEl) lvlEl.textContent = done;
-if (fill)  fill.style.width  = (done / 3 * 100) + '%';
-\end{lstlisting}
-
-% =============================================================
-\section{Операция VIGENÈRE: реализация}
-
-\subsection{Математическая основа}
-
-Шифр Виженера — полиалфавитная подстановка с периодическим ключом длины $m$:
-\begin{equation}
-  c_i = (p_i + k_{i \bmod m}) \bmod 26, \qquad
-  p_i = (c_i - k_{i \bmod m} + 26) \bmod 26
-\end{equation}
-
-\subsection{Реализация в vigenere.js}
-
-\begin{lstlisting}[style=js, caption={Шифрование и расшифрование (vigenere.js)}]
-function encrypt(plaintext, keyword) {
-  const pt  = normalize(plaintext);   // убрать не-A..Z
-  const key = normalize(keyword);
-  if (!key.length) return pt;
-  return pt.split('').map((ch, i) => {
-    const shift = ALPHA.indexOf(key[i % key.length]);
-    return ALPHA[(ALPHA.indexOf(ch) + shift) % 26];
-  }).join('');
-}
-
-function decrypt(ciphertext, keyword) {
-  const ct  = normalize(ciphertext);
-  const key = normalize(keyword);
-  return ct.split('').map((ch, i) => {
-    const shift = ALPHA.indexOf(key[i % key.length]);
-    return ALPHA[(ALPHA.indexOf(ch) - shift + 26) % 26];
-  }).join('');
-}
-\end{lstlisting}
-
-Функция \texttt{encryptSteps} возвращает массив объектов
-\verb|{plain, key, shift, enc}| для пошаговой визуализации в таблице Виженера.
-
-\subsection{Метод Казиски}
-
-Функция \texttt{kasiskiTrigrams} находит все повторяющиеся триграммы
-в шифртексте и вычисляет расстояния между их вхождениями:
-
-\begin{lstlisting}[style=js, caption={Поиск повторяющихся триграмм (vigenere.js)}]
-function kasiskiTrigrams(text) {
-  const t = normalize(text);
-  const seen = {};
-  for (let i = 0; i <= t.length - 3; i++) {
-    const tri = t.slice(i, i + 3);
-    if (!seen[tri]) seen[tri] = [];
-    seen[tri].push(i);
-  }
-  const result = [];
-  for (const [tri, positions] of Object.entries(seen)) {
-    if (positions.length < 2) continue;
-    const distances = [];
-    for (let i = 1; i < positions.length; i++)
-      distances.push(positions[i] - positions[0]);
-    result.push({ tri, positions, distances });
-  }
-  return result.sort((a, b) => b.positions.length - a.positions.length);
-}
-\end{lstlisting}
-
-Наибольший общий делитель расстояний вычисляется через \texttt{gcdList}
-(итеративный алгоритм Евклида) и выводится как вероятная длина ключа.
-
-\subsection{Частотный анализ}
-
-Функция \texttt{splitColumns} разбивает шифртекст на $m$ колонок, каждая из
-которых представляет шифр Цезаря с одним фиксированным сдвигом.
-Функция \texttt{guessShift} находит самую частую букву в колонке и предполагает,
-что она соответствует \texttt{E} (наиболее частая буква английского языка):
-
-\begin{equation}
-  \text{shift} = (\text{pos}(\text{top\_letter}) - \text{pos}(\texttt{E}) + 26) \bmod 26
-\end{equation}
-
-\subsection{Задание с фиксированным ответом}
-
-В финальном шаге определён фиксированный перехват:
-
-\begin{lstlisting}[style=js, caption={Определение задания в vigenere.html}]
-const CHALLENGE_PLAIN  = 'GERMANADVANCEONPARISALLUNITSMOVEFORWARD';
-const CHALLENGE_KEY    = 'WAR';
-const CHALLENGE_CIPHER = encrypt(CHALLENGE_PLAIN, CHALLENGE_KEY);
-// CHALLENGE_CIPHER вычисляется при загрузке страницы
-\end{lstlisting}
-
-\noindent\textbf{Логика валидации:}
-
-\begin{lstlisting}[style=js, caption={Проверка ключа пользователя}]
-document.getElementById('revealBtn').addEventListener('click', () => {
-  const key = normalize(document.getElementById('revealKey').value);
-  if (key === CHALLENGE_KEY) {
-    showDecryptedSuccess(key);   // анимация flip + сводка операции
-  } else {
-    input.classList.add('shake'); // анимация дрожания
-    setTimeout(() => input.classList.remove('shake'), 400);
-    document.getElementById('wrongKeyMsg').style.display = 'block';
-  }
-});
-\end{lstlisting}
-
-При неверном ответе отображается красный блок с подсказкой и кнопкой
-«Узнать ответ с объяснением», которая раскрывает правильный ключ и
-пошаговое описание метода взлома.
-
-% =============================================================
-\section{Операция ENIGMA: реализация}
-
-\subsection{Класс EnigmaMachine}
-
-Класс реализует полную симуляцию исторической Энигмы I (Wehrmacht/Luftwaffe)
-с историческими проводками пяти роторов и двух рефлекторов:
-
-\begin{lstlisting}[style=js, caption={Конструктор EnigmaMachine (enigma.js)}]
-class EnigmaMachine {
-  constructor(
-    rotorNames    = ['I','II','III'],
-    reflectorName = 'B',
-    startPositions = [0,0,0],
-    ringSettings  = [0,0,0],
-    plugboardPairs = []
-  ) {
-    this.rotorDefs = rotorNames.map(n => ROTORS[n]);
-    this.reflector = REFLECTORS[reflectorName];
-    this.positions = [...startPositions];
-    this.rings     = [...ringSettings];
-    this.plugboard = buildPlugboard(plugboardPairs);
-  }
-  // ...
-}
-\end{lstlisting}
-
-Исторические проводки хранятся как строки из 26 символов — позиция в строке
-соответствует входному контакту, символ — выходному:
-
-\begin{lstlisting}[style=js, caption={Исторические данные роторов}]
-const ROTORS = {
-  I:   { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notch: 'Q' },
-  II:  { wiring: 'AJDKSIRUXBLHWTMCQGZNPYFVOE', notch: 'E' },
-  III: { wiring: 'BDFHJLCPRTXVZNYEIWGAKMUSQO', notch: 'V' },
-  IV:  { wiring: 'ESOVPZJAYQUIRHXLNFTGKDCMWB', notch: 'J' },
-  V:   { wiring: 'VZBRGITYUPSDNHLXAWMJQOFECK', notch: 'Z' },
-};
-\end{lstlisting}
-
-\subsection{Шаг роторов с двойным проскоком}
-
-Реальная Энигма имела конструктивный баг — «двойное проскакивание» (double-stepping
-anomaly): средний ротор делал два шага подряд при определённой позиции.
-Это поведение воспроизведено точно:
-
-\begin{lstlisting}[style=js, caption={Метод step() с двойным проскоком}]
-step() {
-  const notches = this.rotorDefs.map(r => r.notch);
-  const pos = this.positions;
-  const midAtNotch   = ALPHA[pos[1]] === notches[1];
-  const rightAtNotch = ALPHA[pos[2]] === notches[2];
-  if (midAtNotch) {
-    pos[0] = (pos[0] + 1) % 26;   // левый тоже шагает
-    pos[1] = (pos[1] + 1) % 26;
-  }
-  if (rightAtNotch) {
-    pos[2] = (pos[2] + 1) % 26;
-    if (!midAtNotch) pos[1] = (pos[1] + 1) % 26;
-  } else {
-    pos[2] = (pos[2] + 1) % 26;
-  }
-}
-\end{lstlisting}
-
-\subsection{Кодирование одной буквы}
-
-Метод \texttt{encodeLetter} возвращает не только результат, но и
-полный путь сигнала (\texttt{path}) для визуализации в интерфейсе:
-
-\begin{lstlisting}[style=js, caption={Путь сигнала через машину}]
-encodeLetter(letter) {
-  const path = [];
-  // 1. Штекерная панель (вход)
-  const pbIn = this.plugboard[letter] || letter;
-  path.push({ stage: 'plugboard_in', in: letter, out: pbIn });
-
-  this.step(); // поворот роторов ДО прохождения сигнала
-  let ch = pbIn;
-
-  // 2. Роторы слева направо (прямой ход)
-  for (let i = 2; i >= 0; i--) {
-    ch = rotorEncode(ch, this.rotorDefs[i].wiring,
-                     this.positions[i], this.rings[i]);
-    path.push({ stage: `rotor${i+1}_fwd`, in: '...', out: ch });
-  }
-
-  // 3. Рефлектор
-  ch = this.reflector[ALPHA.indexOf(ch)];
-  path.push({ stage: 'reflector', in: '...', out: ch });
-
-  // 4. Роторы справа налево (обратный ход)
-  for (let i = 0; i <= 2; i++) {
-    const rev = reverseWiring(this.rotorDefs[i].wiring);
-    ch = rotorEncode(ch, rev, this.positions[i], this.rings[i]);
-    path.push({ stage: `rotor${i+1}_rev`, in: '...', out: ch });
-  }
-
-  // 5. Штекерная панель (выход)
-  const pbOut = this.plugboard[ch] || ch;
-  path.push({ stage: 'plugboard_out', in: ch, out: pbOut });
-
-  return { output: pbOut, path };
-}
-\end{lstlisting}
-
-\subsection{Криб-драггинг}
-
-Функция \texttt{cribDrag} перебирает все позиции криба в шифртексте
-и отбрасывает те, где хотя бы одна буква криба совпадает с буквой шифртекста
-(нарушение правила самозашифровки Энигмы):
-
-\begin{lstlisting}[style=js, caption={Алгоритм cribDrag (enigma.js)}]
-function cribDrag(ciphertext, crib) {
-  const ct = ciphertext.toUpperCase().replace(/[^A-Z]/g,'');
-  const cb = crib.toUpperCase().replace(/[^A-Z]/g,'');
-  const possible = [], impossible = [];
-
-  for (let offset = 0; offset + cb.length <= ct.length; offset++) {
-    let selfEnc = false;
-    for (let i = 0; i < cb.length; i++) {
-      if (ct[offset + i] === cb[i]) { selfEnc = true; break; }
-    }
-    selfEnc ? impossible.push(offset) : possible.push(offset);
-  }
-  return { possible, impossible };
-}
-\end{lstlisting}
-
-\subsection{Симуляция Бомбы Тьюринга}
-
-Функция \texttt{bombeSearch} перебирает все $26^3 = 17\,576$ стартовых
-позиций роторов. Для каждой позиции она создаёт машину, расшифровывает
-первые $|\text{crib}|$ символов шифртекста и проверяет, совпадают ли они
-с крибом:
-
-\begin{lstlisting}[style=js, caption={Основной цикл bombeSearch (enigma.js)}]
-for (let pos = 0; pos < 26*26*26 && tested < maxTests; pos++) {
-  const r = Math.floor(pos / 676) % 26;
-  const m = Math.floor(pos / 26)  % 26;
-  const l = pos % 26;
-
-  const machine = new EnigmaMachine(
-    rotorNames, reflectorName, [r, m, l], ringSettings
-  );
-
-  let valid = true;
-  for (let i = 0; i < crib.length && i < ct.length; i++) {
-    const result = machine.encodeLetter(ct[i]);
-    // Энигма симметрична: decode(ct) = pt
-    if (!result || result.output !== crib[i]) {
-      valid = false; break;
-    }
-  }
-  if (valid) results.push({ posStr: ALPHA[r]+ALPHA[m]+ALPHA[l] });
-  tested++;
-}
-\end{lstlisting}
-
-\textbf{Результат для учебного задания:} шифртекст
-\texttt{BFEUPHOKXZLSBEFSLEWXHRZATXTLKUAUUMFLWMURBBDXLHM}\\
-(немецкая сводка погоды \texttt{WETTERBERICHTNORDSEE...}, роторы III-II-I,
-позиция AAA) — бомба находит ровно \textbf{1 совпадение}: позицию \texttt{AAA}.
-
-\begin{table}[H]
-  \centering
-  \caption{Параметры фиксированного задания Enigma}
-  \begin{tabular}{ll}
-    \toprule
-    Параметр          & Значение \\
-    \midrule
-    Открытый текст    & \texttt{WETTERBERICHTNORDSEEGEBIETBEWOELKTLEICHTESWINDE} \\
-    Ключ (роторы)     & III -- II -- I, рефлектор B, позиция AAA \\
-    Шифртекст         & \texttt{BFEUPHOKXZLSBEFSLEWXHRZATXTLKUAUUMFLWMURBBDXLHM} \\
-    Криб              & \texttt{WETTER} (первые 6 букв) \\
-    Правильный ответ  & Позиция \texttt{AAA} \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-% =============================================================
-\section{Операция VENONA: реализация}
-
-\subsection{Одноразовый блокнот (otp.js)}
-
-Функции \texttt{otpApply} и \texttt{otpDecrypt} реализуют шифр Вернама
-как сложение/вычитание по модулю 26:
-
-\begin{lstlisting}[style=js, caption={OTP шифрование/расшифрование (otp.js)}]
-function otpApply(text, key) {
-  const t = normalize(text);
-  const k = normalize(key);
-  return t.split('').map((ch, i) => {
-    const ti = ALPHA.indexOf(ch);
-    const ki = ALPHA.indexOf(k[i % k.length]);
-    return ALPHA[(ti + ki) % 26];
-  }).join('');
-}
-\end{lstlisting}
-
-\subsection{Атака глубины: XOR двух шифртекстов}
-
-Если два сообщения зашифрованы одним ключом $K$, то:
-\begin{equation}
-  C_1 \oplus C_2 = (P_1 \oplus K) \oplus (P_2 \oplus K) = P_1 \oplus P_2
-\end{equation}
-
-Функция \texttt{xorCiphertexts} вычисляет побуквенную разность по модулю 26:
-
-\begin{lstlisting}[style=js, caption={XOR двух шифртекстов (otp.js)}]
-function xorCiphertexts(c1, c2) {
-  const a = normalize(c1);
-  const b = normalize(c2);
-  const len = Math.min(a.length, b.length);
-  let result = '';
-  for (let i = 0; i < len; i++) {
-    result += ALPHA[(ALPHA.indexOf(a[i]) - ALPHA.indexOf(b[i]) + 26) % 26];
-  }
-  return result;
-}
-\end{lstlisting}
-
-\subsection{Криб-драггинг по XOR}
-
-Имея $P_1 \oplus P_2$ и предполагаемое слово из $P_2$, можно восстановить
-соответствующий фрагмент $P_1$:
-
-\begin{lstlisting}[style=js, caption={Криб-драггинг по XOR (otp.js)}]
-function cribDragXor(xorResult, crib, offset = 0) {
-  const x = normalize(xorResult);
-  const c = normalize(crib);
-  const recovered = [];
-  for (let i = 0; i < c.length && offset + i < x.length; i++) {
-    const xi = ALPHA.indexOf(x[offset + i]);
-    const ci = ALPHA.indexOf(c[i]);
-    recovered.push(ALPHA[(xi + ci) % 26]);
-  }
-  return recovered.join('');
-}
-\end{lstlisting}
-
-% =============================================================
-\section{Интерфейсные механики}
-
-\subsection{Пошаговая навигация}
-
-Все три операции реализованы как многошаговые мастера. Каждый шаг —
-это \verb|<div class="step-panel">|, который показывается или скрывается
-через \texttt{display: block/none}. Функция \texttt{goStep(n)}:
-\begin{itemize}[leftmargin=2em]
-  \item скрывает текущую панель и показывает нужную;
-  \item обновляет точки прогресса (классы \texttt{active}, \texttt{done});
-  \item плавно прокручивает страницу к началу контента.
+Выполненные операции отмечаются в памяти браузера. В шапке сайта отображается
+«Уровень допуска» (0/3 → 3/3) и полоса прогресса. Каждую операцию можно
+пройти заново кнопкой «Начать заново».
+
+\subsection{Проверка ответов}
+
+На финальном шаге каждой операции встроена проверка:
+\begin{itemize}[leftmargin=1.5cm, itemsep=2pt]
+  \item Если ответ верный --- появляется анимация «расшифровки» и итоговое
+        сообщение;
+  \item Если неверный --- анимация тревоги и кнопка «Узнать ответ»,
+        открывающая пошаговое объяснение метода.
 \end{itemize}
 
-\subsection{Система анимаций}
+\subsection{Деплой}
 
-Все анимации определены в \texttt{animations.css} как CSS-keyframes.
-Применяются через добавление класса из JavaScript:
+Сайт опубликован на \textbf{GitHub Pages} и доступен по адресу:
+\url{https://runick7.github.io/crypto-site/}
 
-\begin{table}[H]
-  \centering
-  \caption{Ключевые анимации проекта}
-  \begin{tabular}{lp{8.5cm}}
-    \toprule
-    \textbf{Keyframe / класс} & \textbf{Применение} \\
-    \midrule
-    \texttt{flipIn / .flip-char}       & Буквы расшифрованного текста появляются по одной с переворотом по оси X \\
-    \texttt{shake / .shake}            & Поле ввода при неверном ключе дрожит 0.4 с \\
-    \texttt{fadeUp / .fade-up}         & Панели появляются снизу вверх при переходе между шагами \\
-    \texttt{popIn / .pop-in}           & Элементы «выпрыгивают» при появлении \\
-    \texttt{glowPulse / .glow-green}   & Пульсирующее зелёное свечение найденного ключа \\
-    \texttt{drumRollFast}              & Барабаны Бомбы прыгают при переборе позиций \\
-    \texttt{signalBtnPulse}            & Янтарное мерцание кнопки «Проследить сигнал» \\
-    \texttt{fall / .rain-char}         & Матричный дождь на главной странице \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+Исходный код открыт и хранится в репозитории:
+\url{https://github.com/RuNick7/crypto-site}
 
-\subsection{Стаггер-анимации}
+% ============================================================
+\section{Историческое значение криптографии в годы ВМВ}
 
-Утилитарный класс \texttt{.stagger} анимирует дочерние элементы
-с нарастающей задержкой, создавая эффект последовательного появления:
+Работа в Блетчли-Парке объединила более десяти тысяч человек: математиков,
+лингвистов, шахматистов, кроссвордистов. Уинстон Черчилль назвал их
+«золотыми яйцами, которые никогда не кудахтают».
 
-\begin{lstlisting}[style=css, caption={Утилита .stagger из animations.css}]
-.stagger > * { opacity: 0; }
-.stagger > *:nth-child(1) { animation: fadeUp 0.5s 0.05s ease forwards; }
-.stagger > *:nth-child(2) { animation: fadeUp 0.5s 0.15s ease forwards; }
-.stagger > *:nth-child(3) { animation: fadeUp 0.5s 0.25s ease forwards; }
-/* ...до 6-го элемента */
-\end{lstlisting}
+Ключевые результаты криптоанализа союзников:
+\begin{itemize}[leftmargin=1.5cm, itemsep=3pt]
+  \item Чтение немецких морских шифров позволило уничтожать подводные лодки
+        и обеспечило успех в «Битве за Атлантику» (1943);
+  \item Расшифровка планов немецкого наступления под Курском (1943) помогла
+        советской стороне подготовиться;
+  \item Операция «Венона» вскрыла советскую шпионскую сеть в США и дала
+        доказательства против Розенбергов (казнены в 1953).
+\end{itemize}
 
-\subsection{Валидация и раскрытие ответа}
+Алан Тьюринг, чьи идеи легли в основу «Бомбы» и всей современной информатики,
+был после войны преследован британским правительством за гомосексуальность и
+скончался в 1954 году. В 2013 году он был официально помилован королевой.
 
-Схема обработки ответа пользователя (на примере операции VIGENÈRE):
-
-\begin{center}
-\begin{tikzpicture}[
-  node distance=1.3cm,
-  box/.style={rectangle, rounded corners=3pt, draw=gray!60,
-              fill=codebg, minimum width=4.8cm, minimum height=0.75cm,
-              align=center, font=\small},
-  dec/.style={diamond, draw=amber, fill=amber!10,
-              minimum width=2.8cm, minimum height=0.7cm,
-              align=center, font=\small},
-  arr/.style={->, >=stealth, gray!70, thick}
-]
-  \node[box] (in)     {Ввод ключа};
-  \node[dec, below=0.7cm of in] (chk)    {Ключ = WAR?};
-  \node[box, below=0.9cm of chk, xshift=-3.6cm] (err) {.shake\\Сообщение об ошибке};
-  \node[box, below=0.9cm of chk, xshift=3.6cm]  (ok)  {flipIn-анимация\\Открытый текст};
-  \node[box, below=1.0cm of err] (hint)  {Подсказка:\\частотный анализ};
-  \node[box, below=0.9cm of hint] (rev)  {«Узнать ответ»:\\ключ + объяснение};
-  \node[box, below=0.9cm of ok]   (done) {localStorage.set\\«Операция завершена»};
-
-  \draw[arr] (in)   -- (chk);
-  \draw[arr] (chk)  -- node[left, font=\tiny]{нет} (err);
-  \draw[arr] (chk)  -- node[right, font=\tiny]{да} (ok);
-  \draw[arr] (err)  -- (hint);
-  \draw[arr] (hint) -- (rev);
-  \draw[arr] (ok)   -- (done);
-\end{tikzpicture}
-\end{center}
-
-\subsection{Функция перезапуска операции}
-
-На каждой странице реализована кнопка «Начать заново»,
-которая полностью сбрасывает состояние:
-
-\begin{lstlisting}[style=js, caption={Функция restartOperation (vigenere.html)}]
-function restartOperation() {
-  localStorage.removeItem('done_vigenere');
-  // Обновить счётчик допуска в навигации
-  const newLvl = ['vigenere','enigma','venona']
-    .filter(o => localStorage.getItem('done_' + o)).length;
-  document.getElementById('clearanceLevel').textContent = newLvl;
-  // Сбросить поля Казиски
-  document.getElementById('kasiskiInput').value = DEFAULT_CIPHER;
-  document.getElementById('kasiskiResult').style.display = 'none';
-  // Сбросить результаты частотного анализа
-  document.getElementById('freqColumns').innerHTML = '';
-  document.getElementById('freqKeyRecover').style.display = 'none';
-  foundKey = '';
-  foundKeyLen = 3;
-  goStep(0);   // вернуть на первый шаг
-}
-\end{lstlisting}
-
-% =============================================================
-\section{Деплой и хостинг}
-
-\subsection{GitHub Pages}
-
-Проект опубликован через GitHub Pages с автоматическим деплоем
-при каждом пуше в ветку \texttt{main}. Статус сборки доступен через API:
-
-\begin{verbatim}
-gh api repos/RuNick7/crypto-site/pages --jq '.status'
-# "built"
-\end{verbatim}
-
-Время пересборки составляет 1–2 минуты. Никаких CI/CD-пайплайнов,
-сборщиков или package-менеджеров не требуется: GitHub Pages напрямую
-раздаёт статические файлы.
-
-\subsection{ES-модули и CORS}
-
-Из-за политики CORS браузеров файлы с \texttt{import} / \texttt{export}
-не работают при открытии через протокол \texttt{file://}. Для локальной
-разработки необходим HTTP-сервер:
-
-\begin{verbatim}
-python3 -m http.server 8080
-# открыть http://localhost:8080
-\end{verbatim}
-
-На GitHub Pages проблем нет — файлы раздаются по HTTPS.
-
-% =============================================================
-\section{История разработки}
-
-\begin{longtable}{lp{10cm}}
-  \toprule
-  \textbf{Хэш} & \textbf{Что сделано} \\
-  \midrule
-  \endhead
-  \texttt{5e69bad} & Первичный деплой: все три операции, матричный дождь, хронология \\
-  \texttt{33b5feb} & Страницы-досье шифров (\texttt{cipher.html}), исправление хронологии \\
-  \texttt{3667ec0} & Консистентность имён, исправление скролла к шагам \\
-  \texttt{3523309} & Тултип хронологии: не выходит за границы вьюпорта \\
-  \texttt{6ba59a1} & Тултип: исправление позиции при первом наведении \\
-  \texttt{484ccd2} & Добавлены итоговые блоки во все финальные шаги \\
-  \texttt{25e16ff} & Фиксированные задания, валидация ключей, объяснение ответа, кнопки перезапуска \\
-  \texttt{fbdbea1} & Немецкое сообщение WETTER, панель перевода, кнопка «Проследить сигнал» \\
-  \texttt{c499ff5} & Исправление SVG: текст «Именно это использовал Тьюринг!» выходил за рамку \\
-  \texttt{c52bd24} & Исправление \texttt{bombeSearch}: возвращал 2000 совпадений вместо одного; убрана дублирующая метка \\
-  \bottomrule
-\end{longtable}
-
-% =============================================================
+% ============================================================
 \section{Заключение}
 
-Проект реализует статический образовательный сайт без каких-либо внешних
-зависимостей. Вся криптографическая логика написана с нуля: шифр Виженера
-с методами Казиски и частотного анализа, полная симуляция машины Энигма I
-с историческими проводками и двойным проскоком роторов, атака глубины
-на OTP и криб-драггинг по XOR.
+Проект «Секретный Архив» позволяет на практике ощутить, как криптография
+изменила ход истории. Интерактивный формат помогает понять не просто факты, но
+и логику: почему «Энигма» считалась невзламываемой и как один повторённый
+блокнот разрушил разведывательную сеть.
 
-Наиболее нетривиальной задачей оказалась симуляция Бомбы Тьюринга:
-первоначальная реализация проверяла самозашифровку шифртекста
-(почти всегда проходила → 2\,000 ложных совпадений). После исправления
-алгоритм правильно сравнивает расшифрованный текст с крибом и возвращает
-ровно одно верное совпадение.
+Работа над проектом включала изучение исторических источников, понимание
+принципов каждого шифра и разработку симуляторов, точно воспроизводящих
+оригинальные алгоритмы. Все три операции основаны на реальных исторических
+событиях и документально подтверждённых методах взлома.
 
-\vspace{1.5em}
-\begin{center}
-  \textcolor{gray}{\rule{10cm}{0.4pt}}\\[0.4em]
-  \small\textcolor{gray}{
-    \url{https://runick7.github.io/crypto-site/} \quad·\quad
-    \url{https://github.com/RuNick7/crypto-site}
-  }
-\end{center}
+% ── Список источников ────────────────────────────────────
+\bigskip
+\begin{thebibliography}{9}
+
+\bibitem{singh}
+Singh, S. \textit{The Code Book: The Science of Secrecy from Ancient Egypt to
+Quantum Cryptography}. Anchor Books, 2000.
+
+\bibitem{hodges}
+Hodges, A. \textit{Alan Turing: The Enigma}. Princeton University Press, 2012.
+
+\bibitem{budiansky}
+Budiansky, S. \textit{Battle of Wits: The Complete Story of Codebreaking in
+World War II}. Touchstone, 2002.
+
+\bibitem{haynes}
+Haynes, J.\,E., Klehr, H., Vassiliev, A. \textit{Spies: The Rise and Fall of
+the KGB in America}. Yale University Press, 2009.
+
+\bibitem{venona-nsa}
+National Security Agency. \textit{VENONA: Soviet Espionage and The American
+Response 1939--1957}. NSA/CSS, 1996. \url{https://www.nsa.gov/venona/}
+
+\bibitem{bletchley}
+Smith, M. \textit{The Secrets of Station X: How the Bletchley Park Codebreakers
+Helped Win the War}. Biteback Publishing, 2011.
+
+\end{thebibliography}
 
 \end{document}
