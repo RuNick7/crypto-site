@@ -1,0 +1,660 @@
+% ============================================================
+%  Отчёт по проекту «Секретный Архив»
+%  Интерактивный образовательный сайт по истории криптографии
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+
+% ── Кодировка и язык ──────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+
+% ── Поля ──────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2cm]{geometry}
+
+% ── Графика и цвета ───────────────────────────────────────
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% ── Таблицы ───────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+
+% ── Код ───────────────────────────────────────────────────
+\usepackage{listings}
+\usepackage{courier}
+
+% ── Ссылки ────────────────────────────────────────────────
+\usepackage{hyperref}
+\usepackage{url}
+
+% ── Математика ────────────────────────────────────────────
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ── Прочее ────────────────────────────────────────────────
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+% ── Цветовая палитра проекта ──────────────────────────────
+\definecolor{amber}{RGB}{245,166,35}
+\definecolor{matrixgreen}{RGB}{0,200,50}
+\definecolor{darkbg}{RGB}{10,10,15}
+\definecolor{codegray}{RGB}{40,40,60}
+\definecolor{lightgray}{RGB}{240,240,245}
+
+% ── Стиль листингов ───────────────────────────────────────
+\lstdefinestyle{jsStyle}{
+  language=JavaScript,
+  backgroundcolor=\color{lightgray},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{matrixgreen!70!black},
+  commentstyle=\color{gray}\itshape,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  numbersep=5pt,
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{gray!30},
+  breaklines=true,
+  captionpos=b,
+  tabsize=2,
+  showstringspaces=false,
+  morekeywords={const,let,async,await,import,export,from,class,extends,of},
+}
+
+\lstdefinestyle{htmlStyle}{
+  language=HTML,
+  backgroundcolor=\color{lightgray},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue!70!black}\bfseries,
+  stringstyle=\color{amber!80!black},
+  commentstyle=\color{gray}\itshape,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=5pt,
+  frame=single,
+  rulecolor=\color{gray!30},
+  breaklines=true,
+  captionpos=b,
+  tabsize=2,
+  showstringspaces=false,
+}
+
+% ── Верхний/нижний колонтитул ─────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Секретный Архив — образовательный криптосайт}}
+\fancyhead[R]{\small\thepage}
+\fancyfoot[C]{\small\textcolor{gray}{GitHub Pages: \url{https://runick7.github.io/crypto-site/}}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% ── Настройка заголовков ──────────────────────────────────
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.7em}{}[\vspace{-0.3em}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{0.7em}{}
+
+% ── Метаданные PDF ────────────────────────────────────────
+\hypersetup{
+  pdftitle={Отчёт по проекту «Секретный Архив»},
+  pdfauthor={RuNick7},
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black,
+  citecolor=matrixgreen!60!black,
+}
+
+% =============================================================
+\begin{document}
+
+% ── Титульная страница ────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{1.5cm}
+
+  {\LARGE\bfseries Отчёт по веб-проекту}\\[0.5em]
+  \rule{\linewidth}{1.5pt}\\[0.4em]
+  {\Huge\bfseries\color{amber!80!black} Секретный Архив}\\[0.3em]
+  \rule{\linewidth}{1.5pt}\\[1em]
+
+  {\large Интерактивный образовательный сайт по истории криптографии}\\[2em]
+
+  \begin{tikzpicture}
+    \draw[amber!70!black, line width=1.2pt] (0,0) rectangle (12,3.5);
+    \draw[gray!40, line width=0.4pt] (0.15,0.15) rectangle (11.85,3.35);
+    \node[align=center] at (6, 2.7) {\large\bfseries Три операции};
+    \node[align=center, color=amber!80!black] at (6, 2.1)
+      {\textbf{Op.\,VIGENÈRE} \quad \textbf{Op.\,ENIGMA} \quad \textbf{Op.\,VENONA}};
+    \node[align=center, color=gray] at (6, 1.35)
+      {Первая мировая $\;\cdot\;$ Вторая мировая $\;\cdot\;$ Холодная война};
+    \node[align=center, color=gray!60] at (6, 0.65)
+      {\small 1914–1918 \quad\qquad 1939–1945 \quad\qquad\qquad 1943–1980};
+  \end{tikzpicture}
+
+  \vfill
+
+  \begin{tabular}{rl}
+    \textbf{Репозиторий:} & \url{https://github.com/RuNick7/crypto-site} \\[0.3em]
+    \textbf{Сайт:}        & \url{https://runick7.github.io/crypto-site/}  \\[0.3em]
+    \textbf{Технологии:}  & HTML5, CSS3, Vanilla JavaScript (ES Modules)   \\[0.3em]
+    \textbf{Объём кода:}  & 5\,465 строк (11 файлов)                       \\[0.3em]
+    \textbf{Дата:}        & Май 2026                                        \\
+  \end{tabular}
+
+  \vspace{2cm}
+\end{titlepage}
+
+% ── Оглавление ───────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% =============================================================
+\section{Введение}
+
+\subsection{Цель проекта}
+
+«Секретный Архив» — статический образовательный веб-сайт, позволяющий пользователю
+в интерактивном формате изучить три ключевых эпизода истории военной криптографии
+XX века. Сайт построен без использования фреймворков и сборщиков — чистый HTML5,
+CSS3 и нативный JavaScript с ES-модулями.
+
+Основные образовательные цели:
+\begin{itemize}[leftmargin=2em]
+  \item объяснить математическую основу каждого шифра через пошаговые визуализации;
+  \item предоставить работающие симуляторы для самостоятельного экспериментирования;
+  \item завершить каждую операцию проверочным заданием с валидацией ответа;
+  \item показать реальный исторический контекст и последствия взлома шифров.
+\end{itemize}
+
+\subsection{Структура сайта}
+
+Сайт состоит из четырёх страниц:
+
+\begin{table}[H]
+  \centering
+  \caption{Страницы проекта}
+  \begin{tabular}{llp{7cm}}
+    \toprule
+    \textbf{Файл}       & \textbf{Операция}   & \textbf{Содержание} \\
+    \midrule
+    \texttt{index.html} & Главная             & Матричная заставка, сетка операций, интерактивная хронология \\
+    \texttt{vigenere.html} & Оп.\,VIGENÈRE    & Шифр Виженера: таблица, шифрование, Казиски, частотный анализ, задание \\
+    \texttt{enigma.html}   & Оп.\,ENIGMA      & Машина Энигма: схема сигнала, симулятор, криб-драггинг, Бомба Тьюринга \\
+    \texttt{venona.html}   & Оп.\,VENONA      & Одноразовый блокнот: OTP, атака глубины, XOR криб-драггинг \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =============================================================
+\section{Архитектура проекта}
+
+\subsection{Файловая структура}
+
+\begin{verbatim}
+crypto-site/
+├── index.html
+├── vigenere.html
+├── enigma.html
+├── venona.html
+├── css/
+│   ├── base.css        (258 строк)  — переменные, сброс, типографика
+│   ├── layout.css      (326 строк)  — навигация, сетка, карточки
+│   ├── design.css     (1130 строк)  — компоненты, кнопки, панели
+│   └── animations.css  (253 строки) — keyframe-анимации
+└── js/
+    ├── ciphers/
+    │   ├── vigenere.js  (118 строк) — логика шифра Виженера
+    │   ├── enigma.js    (197 строк) — класс EnigmaMachine, bombeSearch
+    │   └── otp.js       ( 75 строк) — OTP, XOR, криб-драггинг
+    └── ui/
+        └── common.js              — навигация, прогресс-бар
+\end{verbatim}
+
+\subsection{Принципы архитектуры}
+
+\textbf{Разделение логики и представления.} Вся криптографическая математика
+вынесена в отдельные ES-модули (\texttt{js/ciphers/}), которые не содержат
+ни единой ссылки на DOM. HTML-страницы импортируют эти модули через
+\texttt{<script type="module">} и используют функции для построения UI.
+
+\textbf{Система допусков.} Прохождение каждой операции записывается в
+\texttt{localStorage} (ключи \texttt{done\_vigenere}, \texttt{done\_enigma},
+\texttt{done\_venona}). Навигационная панель на всех страницах читает эти
+значения и показывает счётчик «ДОПУСК N/3».
+
+\textbf{Дизайн-система.} Все цвета, отступы и шрифты определены как CSS-переменные
+в \texttt{base.css}. Стиль «тёмный терминал»: фон \texttt{\#0a0a0f}, акценты
+янтарного (\texttt{\#f5a623}) и матричного зелёного (\texttt{\#00ff41}).
+
+% =============================================================
+\section{Операция VIGENÈRE (1914–1918)}
+
+\subsection{Математическая основа}
+
+Шифр Виженера является полиалфавитной подстановкой. Для ключа длины $m$ и
+открытого текста $p_0, p_1, \ldots$ шифртекст вычисляется как:
+
+\begin{equation}
+  c_i = (p_i + k_{i \bmod m}) \bmod 26
+\end{equation}
+
+где $k_j$ — позиция $j$-го символа ключевого слова в латинском алфавите.
+Обратное преобразование (расшифрование):
+
+\begin{equation}
+  p_i = (c_i - k_{i \bmod m} + 26) \bmod 26
+\end{equation}
+
+\subsection{Шаги обучения}
+
+Операция реализована в виде пяти последовательных шагов:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Таблица Виженера} — интерактивная визуализация: пользователь вводит
+        открытый текст и ключ, каждая пара (буква + сдвиг) отображается в ячейке
+        с анимацией появления.
+
+  \item \textbf{Шифратор/расшифровщик} — свободное шифрование с пошаговым разбором:
+        для каждой буквы показаны исходная буква, буква ключа и результат.
+
+  \item \textbf{Метод Казиски} — поиск повторяющихся триграмм в шифртексте.
+        Расстояния между совпадениями кратны длине ключа; НОД даёт вероятную
+        длину ключа.
+
+  \item \textbf{Частотный анализ} — разбивка шифртекста на $m$ колонок (каждая
+        является шифром Цезаря), визуальные гистограммы частот, автоматическое
+        предположение сдвига по самой частой букве.
+
+  \item \textbf{Задание-взлом} — фиксированное перехваченное сообщение с известным
+        ответом (ключ \texttt{WAR}), валидация ввода пользователя.
+\end{enumerate}
+
+\subsection{Реализация криптографии}
+
+\begin{lstlisting}[style=jsStyle, caption={Шифрование Виженера (vigenere.js)}]
+function encrypt(plaintext, keyword) {
+  const pt  = normalize(plaintext);
+  const key = normalize(keyword);
+  if (!key.length) return pt;
+  return pt.split('').map((ch, i) => {
+    const shift = ALPHA.indexOf(key[i % key.length]);
+    return ALPHA[(ALPHA.indexOf(ch) + shift) % 26];
+  }).join('');
+}
+\end{lstlisting}
+
+\subsection{Задание с проверкой ответа}
+
+Для финального шага определено фиксированное задание:
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Открытый текст:} \texttt{GERMANADVANCEONPARISALLUNITSMOVEFORWARD}
+  \item \textbf{Ключ:} \texttt{WAR}
+  \item \textbf{Шифртекст:} вычисляется при загрузке страницы функцией \texttt{encrypt}
+\end{itemize}
+
+При вводе неверного ключа пользователь получает:
+\begin{enumerate}[leftmargin=2em]
+  \item анимацию дрожания поля ввода (\texttt{.shake});
+  \item красное сообщение с подсказкой (применить частотный анализ);
+  \item кнопку «Узнать ответ с объяснением» — пошаговое раскрытие алгоритма:
+        Казиски $\to$ длина ключа~3, частотный анализ трёх колонок $\to$ W, A, R.
+\end{enumerate}
+
+% =============================================================
+\section{Операция ENIGMA (1939–1945)}
+
+\subsection{Принцип работы машины}
+
+Энигма — электромеханическая полиалфавитная машина. При нажатии клавиши
+электрический сигнал:
+
+\begin{enumerate}[leftmargin=2em]
+  \item проходит через штекерную панель (перестановка пар букв);
+  \item последовательно через три ротора (вперёд);
+  \item отражается рефлектором;
+  \item проходит через три ротора в обратном направлении;
+  \item снова через штекерную панель.
+\end{enumerate}
+
+\textbf{Ключевое свойство:} рефлектор делает шифрование симметричным, и буква
+\emph{никогда} не шифруется сама в себя. Это стало роковой уязвимостью.
+
+Общее число конфигураций Энигмы I:
+
+\begin{equation}
+  N = \underbrace{60}_{\text{выбор роторов}} \times
+      \underbrace{17576}_{\text{позиции}} \times
+      \underbrace{17576}_{\text{кольца}} \times
+      \underbrace{\sim 10^{14}}_{\text{штекерная панель}}
+  \approx 1.58 \times 10^{20}
+\end{equation}
+
+\subsection{Реализация EnigmaMachine}
+
+Класс \texttt{EnigmaMachine} (197 строк) реализует полную симуляцию:
+роторный шаг с двойным проскоком (\textit{double-stepping anomaly}),
+прямое и обратное прохождение через роторы, рефлектор, штекерную панель.
+
+\begin{lstlisting}[style=jsStyle, caption={Шаг роторов с двойным проскоком}]
+step() {
+  const notches = this.rotorDefs.map(r => r.notch);
+  const pos = this.positions;
+  const midAtNotch   = ALPHA[pos[1]] === notches[1];
+  const rightAtNotch = ALPHA[pos[2]] === notches[2];
+  if (midAtNotch) {
+    pos[0] = (pos[0] + 1) % 26;
+    pos[1] = (pos[1] + 1) % 26;
+  }
+  if (rightAtNotch) pos[2] = (pos[2] + 1) % 26;
+  else if (midAtNotch) {} // already stepped
+  else pos[2] = (pos[2] + 1) % 26;
+}
+\end{lstlisting}
+
+\subsection{Перехваченное немецкое сообщение}
+
+Для учебного задания выбрана реальная военно-морская сводка погоды —
+исторически наиболее важный источник крибов для Блетчли Парк:
+
+\begin{table}[H]
+  \centering
+  \caption{Параметры перехваченного сообщения}
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Параметр}   & \textbf{Значение} \\
+    \midrule
+    Открытый текст      & \texttt{WETTERBERICHTNORDSEEGEBIETBEWOELKTLEICHTESWINDE} \\
+    Роторы              & III -- II -- I \\
+    Рефлектор           & B (Umkehrwalze B) \\
+    Начальная позиция   & A -- A -- A \\
+    Штекерная панель    & нет \\
+    Шифртекст           & \texttt{BFEUPHOKXZLSBEFSLEWXHRZATXTLKUAUUMFLWMURBBDXLHM} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Перевод:} \textit{Сводка погоды. Северное море. Район. Облачно. Слабый ветер.}
+
+Именно такие сводки Кригсмарине отправлял ежедневно в 06:00. Слово
+\texttt{WETTER} являлось гарантированным крибом — известным фрагментом
+открытого текста, с которого начиналась атака Бомбы каждое утро.
+
+\subsection{Алгоритм Бомбы Тьюринга}
+
+Исправленный алгоритм \texttt{bombeSearch} перебирает все $26^3 = 17\,576$
+стартовых позиций роторов и для каждой проверяет, совпадает ли расшифрованный
+текст с крибом:
+
+\begin{lstlisting}[style=jsStyle, caption={Исправленная логика bombeSearch}]
+// Для каждой позиции [r, m, l]:
+let valid = true;
+for (let i = 0; i < crib.length && i < ct.length; i++) {
+  const result = machine.encodeLetter(ct[i]); // decode (Enigma симметрична)
+  if (!result || result.output !== crib[i]) {
+    valid = false;
+    break;
+  }
+}
+if (valid) results.push({ positions: [r,m,l], posStr: ... });
+\end{lstlisting}
+
+\textbf{Результат:} для нашего перехваченного сообщения и криба \texttt{WETTER}
+алгоритм находит ровно \textbf{1 совпадение} — позицию \texttt{AAA}.
+
+\subsection{Шаги обучения}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Схема сигнала} — анимированная SVG-диаграмма прохождения сигнала
+        через компоненты машины с кнопкой «⚡ ПРОСЛЕДИТЬ СИГНАЛ».
+  \item \textbf{Симулятор} — полноценная клавиатура, лампочки, дисплей роторов,
+        поддержка произвольных настроек.
+  \item \textbf{Криб-драггинг} — таблица возможных/невозможных позиций криба.
+  \item \textbf{Бомба Тьюринга} — анимированный перебор с барабанами, прогресс-баром,
+        автоматической расшифровкой и переводом немецкого сообщения.
+\end{enumerate}
+
+% =============================================================
+\section{Операция VENONA (1943–1980)}
+
+\subsection{Одноразовый блокнот (OTP)}
+
+Одноразовый блокнот — единственная криптосистема с \textit{доказуемой совершенной
+секретностью} (теорема Шеннона, 1949). Для ключа $k$ длины $n$:
+
+\begin{equation}
+  c_i = (p_i + k_i) \bmod 26
+\end{equation}
+
+Без знания $k$ любой открытый текст длины $n$ является математически
+равновероятным объяснением шифртекста.
+
+\subsection{Роковая ошибка НКВД}
+
+В 1942–43 гг. из-за нехватки ключевых блокнотов часть ключей была использована
+дважды. Если два сообщения $P_1$, $P_2$ зашифрованы одним ключом $K$:
+
+\begin{align}
+  C_1 &= P_1 \oplus K \\
+  C_2 &= P_2 \oplus K \\
+  C_1 \oplus C_2 &= P_1 \oplus P_2
+\end{align}
+
+Ключ исчезает! XOR двух осмысленных текстов содержит статистические
+паттерны языка, которые восстанавливаются через криб-драггинг.
+
+\subsection{Исторические результаты}
+
+\begin{table}[H]
+  \centering
+  \caption{Результаты проекта VENONA}
+  \begin{tabular}{rl}
+    \toprule
+    \textbf{37 лет}  & АНБ читало советский трафик (1943–1980) \\
+    \textbf{300+}    & советских агентов идентифицировано \\
+    \textbf{1949 г.} & СССР испытал ядерную бомбу (на 3–5 лет раньше прогнозов) \\
+    \textbf{1995 г.} & VENONA рассекречена — через 52 года \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =============================================================
+\section{Интерактивные механики}
+
+\subsection{Система валидации ключей}
+
+На операции VIGENÈRE реализован полный цикл проверки ответа:
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.4cm,
+    box/.style={rectangle, rounded corners=4pt, draw=gray, fill=lightgray,
+                minimum width=4.5cm, minimum height=0.8cm, align=center,
+                font=\small},
+    decision/.style={diamond, draw=amber!80!black, fill=amber!10,
+                     minimum width=3cm, minimum height=0.8cm, align=center,
+                     font=\small},
+    arrow/.style={->, >=stealth, gray}
+  ]
+    \node[box] (start)  {Пользователь вводит ключ};
+    \node[decision, below of=start, yshift=-0.3cm] (check) {Ключ верный?};
+    \node[box, below of=check, xshift=-3.5cm] (wrong) {Анимация shake\\Сообщение об ошибке};
+    \node[box, below of=check, xshift=3.5cm] (right) {Flip-анимация\\Открытый текст};
+    \node[box, below of=wrong] (hint) {Подсказка по\\частотному анализу};
+    \node[box, below of=hint] (reveal) {«Узнать ответ»\\Полное объяснение};
+    \node[box, below of=right] (done) {Сводка операции\\Кнопка «Следующая»};
+
+    \draw[arrow] (start) -- (check);
+    \draw[arrow] (check) -- node[left, xshift=-0.2cm]{\tiny нет} (wrong);
+    \draw[arrow] (check) -- node[right, xshift=0.2cm]{\tiny да} (right);
+    \draw[arrow] (wrong) -- (hint);
+    \draw[arrow] (hint) -- (reveal);
+    \draw[arrow] (right) -- (done);
+  \end{tikzpicture}
+  \caption{Схема валидации ключа на операции VIGENÈRE}
+\end{figure}
+
+\subsection{Кнопка «Начать заново»}
+
+На всех трёх операциях добавлена кнопка перезапуска, которая:
+\begin{itemize}[leftmargin=2em]
+  \item сбрасывает запись в \texttt{localStorage} (\texttt{done\_*});
+  \item обнуляет все поля ввода и скрывает результирующие панели;
+  \item переводит пользователя на шаг~0 текущей операции.
+\end{itemize}
+
+\subsection{Система анимаций}
+
+\begin{table}[H]
+  \centering
+  \caption{Основные CSS-анимации}
+  \begin{tabular}{lp{8cm}}
+    \toprule
+    \textbf{Класс / keyframe} & \textbf{Использование} \\
+    \midrule
+    \texttt{flipIn}        & Появление каждой буквы расшифрованного текста \\
+    \texttt{shake}         & Неверный ключ — дрожание поля ввода \\
+    \texttt{fadeUp}        & Плавное появление панелей снизу вверх \\
+    \texttt{glowPulse}     & Пульсирующее свечение (найденный ключ) \\
+    \texttt{drumRollFast}  & Анимация барабанов Бомбы при переборе \\
+    \texttt{signalBtnPulse}& Янтарное мерцание кнопки «Проследить сигнал» \\
+    \texttt{fall}          & Матричный дождь на главной странице \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =============================================================
+\section{Техническая реализация}
+
+\subsection{CSS-переменные (Design Tokens)}
+
+Все визуальные константы определены в \texttt{base.css}:
+
+\begin{lstlisting}[style=htmlStyle, caption={Фрагмент CSS-переменных}]
+:root {
+  --bg:        #0a0a0f;
+  --bg-card:   #0f0f18;
+  --bg-input:  #111122;
+  --border:    #1e1e2e;
+  --amber:     #f5a623;
+  --amber-dim: #a06010;
+  --green:     #00ff41;
+  --green-dim: #00aa2b;
+  --red:       #ff3333;
+  --white:     #e8e8f0;
+  --text-dim:  #666680;
+  --font-title: 'Special Elite', serif;
+  --font-mono:  'Share Tech Mono', monospace;
+  --radius: 4px;
+  --transition: 0.2s ease;
+}
+\end{lstlisting}
+
+\subsection{ES-модули}
+
+Каждый криптографический движок экспортирует чистые функции без побочных эффектов:
+
+\begin{lstlisting}[style=jsStyle, caption={Экспорты vigenere.js}]
+export {
+  ALPHA, normalize, encrypt, decrypt, encryptSteps,
+  letterFrequency, indexOfCoincidence, kasiskiTrigrams,
+  gcd, gcdList, splitColumns, guessShift, EN_FREQ
+};
+\end{lstlisting}
+
+\subsection{Деплой через GitHub Pages}
+
+Сайт размещён на GitHub Pages с автоматическим деплоем при каждом пуше в ветку
+\texttt{main}. Время пересборки — 1–2 минуты. Никакого CI/CD, сборщиков или
+пакетных менеджеров не требуется: статические файлы раздаются напрямую.
+
+% =============================================================
+\section{История разработки (коммиты)}
+
+\begin{longtable}{lp{9.5cm}}
+  \toprule
+  \textbf{Хэш} & \textbf{Описание} \\
+  \midrule
+  \endhead
+  \texttt{5e69bad} & Первичный деплой: образовательный криптосайт \\
+  \texttt{33b5feb} & Страницы-досье шифров и исправление хронологии \\
+  \texttt{3667ec0} & Консистентность названий шифров и скролл к шагам \\
+  \texttt{3523309} & Исправление тултипа хронологии за границей вьюпорта \\
+  \texttt{6ba59a1} & Исправление позиции тултипа при первом наведении \\
+  \texttt{484ccd2} & Смысловые итоги во всех финальных шагах операций \\
+  \texttt{25e16ff} & Валидация ключа, раскрытие ответа, кнопки перезапуска \\
+  \texttt{fbdbea1} & Немецкая сводка погоды, панель перевода, кнопка сигнала \\
+  \texttt{c499ff5} & Исправление обрезания текста в красной рамке SVG \\
+  \texttt{c52bd24} & Исправление алгоритма Бомбы, удаление дублирующей метки \\
+  \bottomrule
+\end{longtable}
+
+% =============================================================
+\section{Образовательные результаты}
+
+\subsection{Покрытые темы}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Полиалфавитное шифрование} — принцип периодического ключа,
+        таблица Виженера, слабость к частотному анализу.
+  \item \textbf{Метод Казиски} — обнаружение длины ключа по повторяющимся
+        триграммам, вычисление НОД расстояний.
+  \item \textbf{Индекс совпадений} — статистическое различение случайного
+        шифртекста (ОТП) от периодического (Виженер).
+  \item \textbf{Электромеханические шифраторы} — принцип роторной машины,
+        двойное проскакивание, рефлектор и его уязвимость.
+  \item \textbf{Криб-драггинг} — использование известных фрагментов открытого
+        текста для исключения позиций.
+  \item \textbf{Атака перебором с ограничениями} — принцип Бомбы Тьюринга,
+        разница между перебором и логическим исключением.
+  \item \textbf{Совершенная секретность OTP} — доказательство Шеннона,
+        равномерность частот в шифртексте.
+  \item \textbf{Атака глубины} — повторное использование OTP-ключа,
+        $C_1 \oplus C_2 = P_1 \oplus P_2$.
+\end{enumerate}
+
+\subsection{Геймификация}
+
+Система «допусков» (0/3 → 1/3 → 2/3 → 3/3) мотивирует пройти все три операции.
+Прогресс-бар в нижней части каждой страницы визуализирует общее продвижение.
+
+% =============================================================
+\section{Заключение}
+
+Проект реализует образовательную платформу по истории криптографии, охватывающую
+три ключевых эпохи: Первую мировую (шифр Виженера), Вторую мировую (машина Энигма)
+и Холодную войну (операция VENONA).
+
+Главные технические достижения:
+\begin{itemize}[leftmargin=2em]
+  \item полная симуляция машины Энигма I с двойным проскоком роторов
+        и историческими проводками (5 роторов, 2 рефлектора);
+  \item корректный алгоритм поиска Бомбы Тьюринга — находит единственную
+        правильную конфигурацию вместо тысяч ложных совпадений;
+  \item система валидации с пошаговым объяснением ответа и возможностью
+        перезапуска операции;
+  \item реальное немецкое сообщение (сводка погоды Кригсмарине) с переводом
+        и историческим комментарием.
+\end{itemize}
+
+Сайт доступен по адресу: \url{https://runick7.github.io/crypto-site/}
+
+\vspace{1em}
+\noindent\rule{\linewidth}{0.4pt}
+\begin{center}
+  \small\textcolor{gray}{Репозиторий: \url{https://github.com/RuNick7/crypto-site}
+  \quad·\quad 5\,465 строк \quad·\quad 10 коммитов \quad·\quad Май 2026}
+\end{center}
+
+\end{document}
