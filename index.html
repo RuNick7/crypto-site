@@ -8,6 +8,14 @@
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/design.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -41,14 +49,20 @@
 <div class="page" id="mainContent" style="display:none">
 
   <!-- Hero -->
-  <section class="section-hero">
-    <div class="container">
-      <div class="op-tag">АРХИВ · 3 ОПЕРАЦИИ · ИНТЕРАКТИВНЫЕ СИМУЛЯЦИИ</div>
-      <h1>Тайны в&nbsp;открытом эфире</h1>
-      <p class="mt-2" style="max-width:560px; color:var(--text-dim)">
-        Каждая война 20 века имела скрытое измерение — шифры, коды, перехваченные депеши.
-        Пройди через три операции и сам взломай шифры, которые меняли ход истории.
-      </p>
+  <section class="section-hero" style="position:relative;overflow:hidden">
+    <canvas id="heroCanvas" width="320" height="320"
+      style="position:absolute;right:max(2rem,6%);top:50%;transform:translateY(-50%);
+             width:min(320px,38vw);height:min(320px,38vw);pointer-events:none;
+             opacity:0;transition:opacity 1.5s 0.3s"></canvas>
+    <div class="container" style="position:relative;z-index:1">
+      <div style="display:inline-block;background:rgba(10,10,15,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:10px;padding:2rem 2.4rem;border:1px solid rgba(245,166,35,0.08)">
+        <div class="op-tag">АРХИВ · 3 ОПЕРАЦИИ · ИНТЕРАКТИВНЫЕ СИМУЛЯЦИИ</div>
+        <h1>Тайны в&nbsp;открытом эфире</h1>
+        <p class="mt-2" style="max-width:560px; color:var(--text-dim)">
+          Каждая война 20 века имела скрытое измерение — шифры, коды, перехваченные депеши.
+          Пройди через три операции и сам взломай шифры, которые меняли ход истории.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -292,46 +306,8 @@
 </style>
 
 <script>
-// ── Rain animation ──
+// ── Typewriter ──
 (function(){
-  const canvas = document.getElementById('rainCanvas');
-  const ctx = canvas.getContext('2d');
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
-  let cols, drops;
-
-  function resize(){
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    cols  = Math.floor(canvas.width / 20);
-    drops = Array(cols).fill(0);
-  }
-
-  function draw(){
-    ctx.fillStyle = 'rgba(10,10,15,0.06)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '14px Share Tech Mono, monospace';
-
-    for(let i = 0; i < drops.length; i++){
-      const ch = chars[Math.floor(Math.random() * chars.length)];
-      const x = i * 20;
-      const y = drops[i] * 20;
-
-      // gradient: bright green at front, dim behind
-      ctx.fillStyle = drops[i] * 20 > canvas.height * 0.7
-        ? 'rgba(0,100,20,0.4)' : '#007a1e';
-      if(Math.random() > 0.97) ctx.fillStyle = '#00ff41';
-
-      ctx.fillText(ch, x, y);
-      if(y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      else drops[i]++;
-    }
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-  const rainInterval = setInterval(draw, 50);
-
-  // ── Typewriter ──
   const titleEl = document.getElementById('introTitle');
   const subEl   = document.getElementById('introSub');
   const btn     = document.getElementById('enterBtn');
@@ -361,10 +337,12 @@
   }, 300);
 
   btn.addEventListener('click', ()=>{
-    clearInterval(rainInterval);
+    if(window.stopRain) window.stopRain();
     const intro = document.getElementById('introScreen');
     intro.classList.add('hidden');
-    document.getElementById('mainContent').style.display = 'block';
+    const main = document.getElementById('mainContent');
+    main.style.display = 'block';
+    document.getElementById('heroCanvas').style.opacity = '0.85';
     setTimeout(()=> intro.remove(), 900);
   });
 })();
@@ -423,6 +401,134 @@
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') document.getElementById('enterBtn')?.click();
 });
+</script>
+
+<!-- Three.js 3D Matrix Rain -->
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('rainCanvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setClearColor(0x0a0a0f, 1);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setSize(innerWidth, innerHeight);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 80);
+camera.position.z = 18;
+
+const N = 1600;
+const pos = new Float32Array(N * 3);
+const col = new Float32Array(N * 3);
+const spd = new Float32Array(N);
+
+for (let i = 0; i < N; i++) {
+  const z = (Math.random() - 0.5) * 28;
+  pos[i*3]   = (Math.random() - 0.5) * 55;
+  pos[i*3+1] = (Math.random() - 0.5) * 38;
+  pos[i*3+2] = z;
+  // closer particles fall faster and appear brighter
+  const t = (z + 14) / 28;
+  spd[i] = 0.03 + Math.random() * 0.07 + t * 0.05;
+  col[i*3]   = 0;
+  col[i*3+1] = 0.12 + t * 0.88;
+  col[i*3+2] = t * 0.10;
+}
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+
+scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+  size: 0.16, sizeAttenuation: true,
+  vertexColors: true, transparent: true, opacity: 0.92
+})));
+
+let rafId;
+function tick() {
+  rafId = requestAnimationFrame(tick);
+  const p = geo.getAttribute('position');
+  for (let i = 0; i < N; i++) {
+    p.array[i*3+1] -= spd[i];
+    if (p.array[i*3+1] < -19) {
+      p.array[i*3+1] = 19;
+      p.array[i*3]   = (Math.random() - 0.5) * 55;
+    }
+  }
+  p.needsUpdate = true;
+  renderer.render(scene, camera);
+}
+tick();
+
+window.stopRain = () => cancelAnimationFrame(rafId);
+
+window.addEventListener('resize', () => {
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+});
+</script>
+
+<!-- Three.js Hero Icosahedron with Bloom -->
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass }     from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+const canvas = document.getElementById('heroCanvas');
+const W = 320, H = 320;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setSize(W, H, false);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ReinhardToneMapping;
+renderer.toneMappingExposure = 1.4;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
+camera.position.z = 4.8;
+
+// Outer wireframe
+const icoGeo  = new THREE.IcosahedronGeometry(1.7, 1);
+const edges    = new THREE.EdgesGeometry(icoGeo);
+const lineMat  = new THREE.LineBasicMaterial({ color: 0xf5a623 });
+const wireframe = new THREE.LineSegments(edges, lineMat);
+scene.add(wireframe);
+
+// Inner solid (depth / occlusion feel)
+const solidMat = new THREE.MeshBasicMaterial({ color: 0x0e0900, transparent: true, opacity: 0.65 });
+const solid    = new THREE.Mesh(icoGeo, solidMat);
+scene.add(solid);
+
+// Inner smaller icosahedron — green tint
+const innerGeo  = new THREE.IcosahedronGeometry(0.9, 0);
+const innerEdge = new THREE.EdgesGeometry(innerGeo);
+const innerLine = new THREE.LineSegments(innerEdge, new THREE.LineBasicMaterial({ color: 0x00ff41 }));
+innerLine.rotation.y = Math.PI / 4;
+scene.add(innerLine);
+
+// Bloom composer
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 1.6, 0.5, 0.08));
+
+function tick() {
+  requestAnimationFrame(tick);
+  wireframe.rotation.x += 0.003;
+  wireframe.rotation.y += 0.006;
+  solid.rotation.copy(wireframe.rotation);
+  innerLine.rotation.x -= 0.002;
+  innerLine.rotation.y += 0.008;
+  composer.render();
+}
+
+// Start when main content is revealed
+const main = document.getElementById('mainContent');
+const obs = new MutationObserver(() => {
+  if (main.style.display !== 'none') { tick(); obs.disconnect(); }
+});
+obs.observe(main, { attributes: true, attributeFilter: ['style'] });
 </script>
 </body>
 </html>
